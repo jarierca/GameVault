@@ -40,12 +40,4 @@ public class VideogameRepository {
 		Videogame reference = entityManager.getReference(Videogame.class, id);
 		entityManager.remove(reference);
 	}
-
-	public List<Videogame> findByPlayerId(String playerId) {
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		CriteriaQuery<Videogame> cq = cb.createQuery(Videogame.class);
-		Root<Videogame> root = cq.from(Videogame.class);
-		cq.select(root).where(cb.equal(root.get("player").get("id"), playerId));
-		return entityManager.createQuery(cq).getResultList();
-	}
 }

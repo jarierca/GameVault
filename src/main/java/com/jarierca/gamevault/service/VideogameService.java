@@ -38,8 +38,4 @@ public class VideogameService {
         videogameRepository.deleteById(id);
     }
 
-    @Transactional
-    public List<Videogame> listByPlayerId(String playerId) {
-        return videogameRepository.findByPlayerId(playerId);
-    }
 }

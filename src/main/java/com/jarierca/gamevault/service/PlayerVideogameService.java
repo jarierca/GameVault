@@ -37,4 +37,9 @@ public class PlayerVideogameService {
     public void deletePlayerVideogame(Long id) {
         playerVideogameRepository.deleteById(id);
     }
+    
+    @Transactional
+    public List<PlayerVideogame> listByPlayerId(String playerId) {
+        return playerVideogameRepository.findByPlayerId(playerId);
+    }
 }

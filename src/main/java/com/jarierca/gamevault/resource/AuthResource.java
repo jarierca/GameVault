@@ -32,7 +32,7 @@ public class AuthResource {
 			Set<String> roles = new HashSet<>();
 			roles.add(player.getRole());
 
-			String token = Jwt.issuer("your-issuer").upn(credentials.getUsername()).groups(roles)
+			String token = Jwt.issuer("dev-gamevault").upn(credentials.getUsername()).groups(roles)
 					.subject(String.valueOf(player.getId())).expiresIn(Duration.ofHours(1)).sign();
 
 			LOG.info("JWT Token: {}", token);

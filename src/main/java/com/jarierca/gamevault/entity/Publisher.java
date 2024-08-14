@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Developer extends PanacheEntityBase {
+public class Publisher extends PanacheEntityBase {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +24,10 @@ public class Developer extends PanacheEntityBase {
 
 	private Date date;
 
-	public Developer() {
+	public Publisher() {
 	}
 
-	public Developer(Long id, String name, String description, Videogame videoGame, Date date) {
+	public Publisher(Long id, String name, String description, Videogame videoGame, Date date) {
 		super();
 		this.id = id;
 		this.name = name;

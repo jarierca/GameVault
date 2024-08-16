@@ -1,19 +1,22 @@
--- Selección de todos los datos de la tabla PLAYER
+-- PLAYER
 SELECT * FROM PLAYER;
 
--- Selección de todos los datos de la tabla PLATFORM
+-- PLATFORM
 SELECT * FROM PLATFORM;
 
--- Selección de todos los datos de la tabla GENRE
+-- GENRE
 SELECT * FROM GENRE;
 
--- Selección de todos los datos de la tabla DEVELOPER
+-- DEVELOPER
 SELECT * FROM DEVELOPER;
 
--- Selección de todos los datos de la tabla VIDEOGAME
+-- PUBLISHER
+SELECT * FROM PUBLISHER;
+
+-- VIDEOGAME
 SELECT * FROM VIDEOGAME;
 
--- Selección de todos los datos de la tabla PLAYER_VIDEOGAME
+-- PLAYER_VIDEOGAME
 SELECT * FROM PLAYER_VIDEOGAME;
 
 

@@ -1,0 +1,11 @@
+FROM maven:3.9.8-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -Dquarkus.package.type=uber-jar -DskipTests
+
+FROM openjdk:21-jdk-slim
+WORKDIR /app
+
+COPY --from=build /app/target/game-vault-api-1.0.0-SNAPSHOT-runner.jar /app/quarkus-app.jar
+
+ENTRYPOINT ["java", "-jar", "/app/quarkus-app.jar"]

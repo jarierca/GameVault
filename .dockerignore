@@ -1,5 +1,13 @@
+# Ignorar todos los archivos y directorios
 *
-!target/*-runner
+
+# No ignorar el directorio target, archivos JAR y la estructura de quarkus-app
+!target/
 !target/*-runner.jar
-!target/lib/*
-!target/quarkus-app/*
+!target/lib/
+!target/quarkus-app/
+
+# No ignorar pom.xml y src
+!pom.xml
+!src/
+

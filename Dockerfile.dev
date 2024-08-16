@@ -1,14 +1,13 @@
-FROM maven:3.9.8-eclipse-temurin-21 AS build
-WORKDIR /app
-COPY . .
-RUN mvn clean package -Dquarkus.package.type=uber-jar -DskipTests
+FROM maven:3.9.8-eclipse-temurin-21
 
-FROM openjdk:21-jdk-slim
 WORKDIR /app
 
-COPY --from=build /app/target/game-vault-api-1.0.0-SNAPSHOT-runner.jar /app/quarkus-app.jar
+COPY pom.xml .
+COPY src ./src
 
 EXPOSE 8080
 EXPOSE 5005
 
-ENTRYPOINT ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "/app/quarkus-app.jar"]
+ENV QUARKUS_HTTP_HOST=0.0.0.0
+
+CMD ["mvn", "quarkus:dev", "-Dquarkus.profile=dev"]

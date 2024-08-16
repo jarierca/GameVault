@@ -26,7 +26,7 @@ services:
     container_name: GameVaultAPI
     ports:
       - "8080:8080"
-      - "5005:5005"  # Debug port
+      - "5005:5005"
     depends_on:
       postgres:
         condition: service_healthy
@@ -34,6 +34,8 @@ services:
       - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://GameVaultDB:5432/GAMEVAULT
       - QUARKUS_DATASOURCE_JDBC_USERNAME=GAMEVAULT
       - QUARKUS_DATASOURCE_JDBC_PASSWORD=GAMEVAULT
+    volumes:
+      - .:/app
 
 volumes:
   pg_data:

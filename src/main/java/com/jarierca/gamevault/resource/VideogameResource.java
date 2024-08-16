@@ -2,13 +2,10 @@ package com.jarierca.gamevault.resource;
 
 import java.util.List;
 
-import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.jarierca.gamevault.entity.Videogame;
 import com.jarierca.gamevault.service.VideogameService;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -29,8 +26,6 @@ public class VideogameResource {
 	@Inject
 	VideogameService videogameService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(VideogameResource.class);
-
 	@GET
 	public List<Videogame> getAllVideogames() {
 		return videogameService.listAll();
@@ -42,7 +37,9 @@ public class VideogameResource {
 		return videogameService.findById(id);
 	}
 
+	@RolesAllowed("admin")
 	@POST
+	@Path("/add")
 	public Response addVideogame(Videogame videogame) {
 		videogameService.addVideogame(videogame);
 		return Response.status(Response.Status.CREATED).build();

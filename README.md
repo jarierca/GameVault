@@ -18,6 +18,16 @@ You can run your application in dev mode that enables live coding using:
 **For Production with Base Configuration:**
 
 ```bash
+docker-compose -f docker-compose.prod.yml up --build
+```
+
+**Explanation:**
+- `-f docker-compose.prod.yml`: Specifies the production-specific file.
+- `up --build`: Builds and starts the containers.
+
+**For Development:**
+
+```bash
 docker-compose -f docker-compose.dev.yml up --build
 ```
 
@@ -61,10 +71,6 @@ docker-compose -f docker-compose.prod.yml down --volumes
 
 By using these commands and flags, you can efficiently manage your Docker containers and configurations for different environments.
 - `-f docker-compose.dev
-
-
-
-
 
 
 ## Packaging and running the application

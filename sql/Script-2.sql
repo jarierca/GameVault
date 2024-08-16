@@ -240,6 +240,14 @@ INSERT INTO DEVELOPER (NAME) VALUES
 ('Bethesda Softworks'),
 ('Nintendo');
 
+-- Datos de prueba para la tabla DEVELOPER
+INSERT INTO PUBLISHER (NAME) VALUES
+('Ubisoft'),
+('Electronic Arts'),
+('Rockstar Games'),
+('Bethesda Softworks'),
+('Nintendo');
+
 -- Datos de prueba para la tabla VIDEOGAME
 INSERT INTO VIDEOGAME (TITLE, PLATFORM_ID, RELEASEDATE, GAMETYPE, MAXPLAYERS, OVERVIEW, ALTERNATIVENAMES, URLALT, VIDEO, GENRE_ID, DEVELOPER_ID, PUBLISHER_ID, IMAGES_ID) VALUES
 ('Assassin''s Creed Odyssey', 1, '2018-10-05', 'Action RPG', 1, 'An action role-playing video game developed by Ubisoft', 'AC Odyssey', 'https://example.com/ac-odyssey', 'https://example.com/video/ac-odyssey', 1, 1, 1, NULL),

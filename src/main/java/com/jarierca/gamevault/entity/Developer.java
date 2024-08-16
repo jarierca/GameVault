@@ -19,20 +19,16 @@ public class Developer extends PanacheEntityBase {
 	private String name;
 	private String description;
 
-	@ManyToOne
-	private Videogame videoGame;
-
 	private Date date;
 
 	public Developer() {
 	}
 
-	public Developer(Long id, String name, String description, Videogame videoGame, Date date) {
+	public Developer(Long id, String name, String description, Date date) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		this.videoGame = videoGame;
 		this.date = date;
 	}
 
@@ -58,14 +54,6 @@ public class Developer extends PanacheEntityBase {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public Videogame getVideoGame() {
-		return videoGame;
-	}
-
-	public void setVideoGame(Videogame videoGame) {
-		this.videoGame = videoGame;
 	}
 
 	public Date getDate() {

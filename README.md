@@ -13,6 +13,60 @@ You can run your application in dev mode that enables live coding using:
 
 > **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
 
+## Running the app with docker
+
+**For Production with Base Configuration:**
+
+```bash
+docker-compose -f docker-compose.dev.yml up --build
+```
+
+**Explanation:**
+- `-f docker-compose.dev.yml`: Specifies the production-specific file.
+- `up --build`: Builds and starts the containers.
+
+### **Stopping and Removing Containers**
+
+To stop and remove containers and networks, you can use:
+
+**For Development:**
+
+```bash
+docker-compose -f docker-compose.dev.yml down
+```
+
+**Explanation:**
+- `-f docker-compose.dev.yml`: Specifies the development-specific Docker Compose file.
+- `down`: Stops and removes containers, networks, and volumes.
+
+```bash
+docker-compose -f docker-compose.dev.yml down --volumes
+```
+- `down`: --volumes: Stops and removes containers, networks, and associated volumes.
+
+**For Production:**
+
+```bash
+docker-compose -f docker-compose.prod.yml down
+```
+
+**Explanation:**
+- `-f docker-compose.prod.yml`: Specifies the production-specific Docker Compose file.
+- `down`: Stops and removes containers, networks, and volumes.
+
+```bash
+docker-compose -f docker-compose.prod.yml down --volumes
+```
+- `down`: --volumes: Stops and removes containers, networks, and associated volumes.
+
+By using these commands and flags, you can efficiently manage your Docker containers and configurations for different environments.
+- `-f docker-compose.dev
+
+
+
+
+
+
 ## Packaging and running the application
 
 The application can be packaged using:
@@ -72,7 +126,21 @@ Easily start your REST Web Services
 [Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
 
 
-### Prueba `testGetAllPlayers`
+### Test `login`
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"username": "player2", "password": "password1"}' http://localhost:8080/auth/login
+```
+
+
+### Test `myGames`
+
+```bash
+curl -X GET http://localhost:8080/player-videogames/mygames -H "Authorization: Bearer TOKEN"
+```
+
+
+### Test `testGetAllPlayers`
 
 ```java
 @Test
@@ -88,7 +156,7 @@ public void testGetAllPlayers() {
 curl -X GET http://localhost:8080/players
 ```
 
-### Prueba `testCreatePlayer`
+### Test `testCreatePlayer`
 
 ```java
 @Test
@@ -106,7 +174,7 @@ public void testCreatePlayer() {
 curl -X POST -H "Content-Type: application/json" -d '{"username": "'"$testUsername"'", "email": "'"$testEmail"'", "password": "password123", "role": "user"}' http://localhost:8080/players
 ```
 
-### Prueba `testGetPlayerById`
+### Test `testGetPlayerById`
 
 ```java
 @Test
@@ -123,7 +191,7 @@ public void testGetPlayerById() {
 curl -X GET http://localhost:8080/players/$testUsername
 ```
 
-### Prueba `testUpdatePlayer`
+### Test `testUpdatePlayer`
 
 ```java
 @Test
@@ -141,7 +209,7 @@ public void testUpdatePlayer() {
 curl -X PUT -H "Content-Type: application/json" -d '{"username": "updatedPlayer", "email": "updated@example.com", "password": "newpassword"}' http://localhost:8080/players/$testUsername
 ```
 
-### Prueba `testDeletePlayer`
+### Test `testDeletePlayer`
 
 ```java
 @Test
@@ -157,5 +225,3 @@ public void testDeletePlayer() {
 curl -X DELETE http://localhost:8080/players/$testUsername
 ```
 
-
-i

@@ -27,7 +27,7 @@ public class Player extends PanacheEntityBase {
 		this.password = password;
 		this.role = role;
 	}
-
+	
 	public Long getId() {
 		return id;
 	}

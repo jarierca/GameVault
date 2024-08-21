@@ -1,10 +1,11 @@
 -- Datos de prueba para la tabla PLAYER
 INSERT INTO PLAYER (USERNAME, EMAIL, PASSWORD, ROLE) VALUES
-('player1', 'player1@example.com', 'password1','user'),
-('player2', 'player2@example.com', 'password2','user'),
-('jari', 'player2@example.com', 'jari','admin'),
-('devi', 'player2@example.com', 'devi','admin'),
-('player3', 'player3@example.com', 'password3','user');
+('player1', 'player1@player1.com', '$2a$10$QjSt1w/8UrAz4ppjGZp2YuIruiysnX2pCLCAqwBORwlG2Z6Y/5qde','user'),
+('player2', 'player2@player2.com', '$2a$10$s1LTJ.DKJJol2dNAkKM4suK7nA8S7k6v25gkZbkdlJNSpLGJaNseK','user'),
+('player3', 'player3@player3.com', '$2a$10$G8Jm.1hKA5ntvidRInmlLuzzLQ8Pveni0TeWpC3INCxV1BIMdYBcC','user')
+('jari', 'jari@jari.com', '$2a$10$0CXLrQsoEgVJ5PO6QoZdPOyyIziWWZYpk8JGoMSbsNasXKHQRP7fq','admin'),
+('devi', 'devi@devi.com', '$2a$10$EquM9leAvAfab6pJ1g8T0etQgNbrn/lI3u7xiEA6XMOC5c32AYOCe','admin');
+
 
 -- Datos de prueba para la tabla PLATFORM
 INSERT INTO PLATFORM (NAME) VALUES

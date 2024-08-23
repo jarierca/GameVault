@@ -22,6 +22,10 @@ public class VideogameService {
     public Videogame findById(Long id) {
         return videogameRepository.findById(id);
     }
+    
+    public List<Videogame> findByPlatformId(Long platformId) {
+        return videogameRepository.findByPlatformId(platformId);
+    }
 
     @Transactional
     public void addVideogame(Videogame videogame) {

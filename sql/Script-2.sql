@@ -2,7 +2,7 @@
 INSERT INTO PLAYER (USERNAME, EMAIL, PASSWORD, ROLE) VALUES
 ('player1', 'player1@player1.com', '$2a$10$QjSt1w/8UrAz4ppjGZp2YuIruiysnX2pCLCAqwBORwlG2Z6Y/5qde','user'),
 ('player2', 'player2@player2.com', '$2a$10$s1LTJ.DKJJol2dNAkKM4suK7nA8S7k6v25gkZbkdlJNSpLGJaNseK','user'),
-('player3', 'player3@player3.com', '$2a$10$G8Jm.1hKA5ntvidRInmlLuzzLQ8Pveni0TeWpC3INCxV1BIMdYBcC','user')
+('player3', 'player3@player3.com', '$2a$10$G8Jm.1hKA5ntvidRInmlLuzzLQ8Pveni0TeWpC3INCxV1BIMdYBcC','user'),
 ('jari', 'jari@jari.com', '$2a$10$0CXLrQsoEgVJ5PO6QoZdPOyyIziWWZYpk8JGoMSbsNasXKHQRP7fq','admin'),
 ('devi', 'devi@devi.com', '$2a$10$EquM9leAvAfab6pJ1g8T0etQgNbrn/lI3u7xiEA6XMOC5c32AYOCe','admin');
 
@@ -262,9 +262,9 @@ INSERT INTO VIDEOGAME (TITLE, PLATFORM_ID, RELEASEDATE, GAMETYPE, MAXPLAYERS, OV
 
 -- Datos de prueba para la tabla PLAYER_VIDEOGAME
 INSERT INTO PLAYER_VIDEOGAME (PLAYER_ID, VIDEOGAME_ID, DIGITAL, PHYSICAL_STATUS, PURCHASE_DATE) VALUES
-(1, 1, false, 'New', '2021-01-15'),
-(2, 2, false, 'Used', '2020-10-20'),
-(3, 3, true, null, null),
-(1, 4, false, 'Damaged', '2019-05-10'),
-(2, 5, true, null, null),
-(3, 6, false, 'New', '2020-03-25');
+(1, 7, false, 'New', '2021-01-15'),
+(2, 8, false, 'Used', '2020-10-20'),
+(3, 9, true, null, null),
+(1, 8, false, 'Damaged', '2019-05-10'),
+(2, 10, true, null, null),
+(3, 11, false, 'New', '2020-03-25');

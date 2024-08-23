@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.jarierca.gamevault.entity.Videogame;
 
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -13,7 +14,7 @@ import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
-public class VideogameRepository {
+public class VideogameRepository implements PanacheRepository<Videogame> {
 
 	@PersistenceContext
 	EntityManager entityManager;
@@ -30,14 +31,22 @@ public class VideogameRepository {
 		return entityManager.find(Videogame.class, id);
 	}
 
+	public List<Videogame> findByPlatformId(Long platformId) {
+		return list("platform.id", platformId);
+	}
+
 	@Transactional
 	public void persist(Videogame videogame) {
 		entityManager.persist(videogame);
 	}
 
 	@Transactional
-	public void deleteById(Long id) {
-		Videogame reference = entityManager.getReference(Videogame.class, id);
-		entityManager.remove(reference);
-	}
+	public boolean deleteById(Long id) {
+        Videogame videogame = entityManager.find(Videogame.class, id);
+        if (videogame != null) {
+            entityManager.remove(videogame);
+            return true;
+        }
+        return false;
+    }
 }

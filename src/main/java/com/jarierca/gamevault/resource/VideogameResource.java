@@ -32,9 +32,20 @@ public class VideogameResource {
 	}
 
 	@GET
-	@Path("/{id}")
-	public Videogame getVideogame(@PathParam("id") Long id) {
-		return videogameService.findById(id);
+    @Path("/{id}")
+    public Response getVideogameById(@PathParam("id") Long id) {
+        Videogame videogame = videogameService.findById(id);
+        if (videogame != null) {
+            return Response.ok(videogame).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+	@GET
+	@Path("/platform/{platformId}")
+	public List<Videogame> getVideogamesByPlatform(@PathParam("platformId") Long platformId) {
+		return videogameService.findByPlatformId(platformId);
 	}
 
 	@RolesAllowed("admin")

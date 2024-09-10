@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      GameVault:
+        image: GameVaultAPI
+        ports:
+          - 8080:8080
+        options: >-
+          --health-cmd="curl --fail http://localhost:8080/health || exit 1"
+          --health-interval=30s
+          --health-timeout=10s
+          --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '21'
+
+      - name: Build with Maven
+        run: ./mvnw clean install
+
+      - name: Start Docker Compose
+        run: docker-compose up -d
+
+      - name: Wait for services to be ready
+        run: |
+          echo "Waiting for services to be ready..."
+          sleep 30
+
+      - name: Run Quarkus in dev mode
+        run: ./mvnw quarkus:dev
+        env:
+          QUARKUS_HTTP_PORT: 8080
+

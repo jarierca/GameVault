@@ -12,17 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      GameVault:
-        image: gamevaultapi
-        ports:
-          - 8080:8080
-        options: >-
-          --health-cmd="curl --fail http://localhost:8080/health || exit 1"
-          --health-interval=30s
-          --health-timeout=10s
-          --health-retries=3
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -36,12 +25,12 @@ jobs:
         run: ./mvnw clean install
 
       - name: Start Docker Compose
-        run: docker-compose up -d
+        run: docker-compose -f docker-compose.dev.yml up -d
 
       - name: Wait for services to be ready
         run: |
           echo "Waiting for services to be ready..."
-          sleep 30
+          sleep 30  # Ajusta el tiempo según sea necesario
 
       - name: Run Quarkus in dev mode
         run: ./mvnw quarkus:dev

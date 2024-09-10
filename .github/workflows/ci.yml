@@ -16,6 +16,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            apt-transport-https \
+            ca-certificates \
+            curl \
+            software-properties-common
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+          sudo apt-get update
+          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
+      - name: Start Docker Compose
+        run: docker-compose -f docker-compose.dev.yml up -d
+
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
@@ -25,19 +43,12 @@ jobs:
       - name: Build with Maven
         run: ./mvnw clean install
 
-      - name: Start Docker Compose
-        uses: docker/compose-action@v2
-        with:
-          docker-compose-file: docker-compose.dev.yml
-          args: up -d
-
       - name: Wait for services to be ready
         run: |
           echo "Waiting for services to be ready..."
-          sleep 30  # Ajusta el tiempo según sea necesario
+          sleep 30
 
       - name: Run Quarkus in dev mode
         run: ./mvnw compile quarkus:dev
         env:
           QUARKUS_HTTP_PORT: 8080
-

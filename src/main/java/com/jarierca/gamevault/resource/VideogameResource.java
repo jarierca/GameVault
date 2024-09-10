@@ -47,6 +47,12 @@ public class VideogameResource {
 	public List<Videogame> getVideogamesByPlatform(@PathParam("platformId") Long platformId) {
 		return videogameService.findByPlatformId(platformId);
 	}
+	
+	@GET
+	@Path("/genre/{genreId}")
+	public List<Videogame> getVideogamesByGenre(@PathParam("genreId") Long genreId) {
+		return videogameService.findByGenreId(genreId);
+	}
 
 	@RolesAllowed("admin")
 	@POST

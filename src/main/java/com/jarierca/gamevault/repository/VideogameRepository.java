@@ -34,6 +34,10 @@ public class VideogameRepository implements PanacheRepository<Videogame> {
 	public List<Videogame> findByPlatformId(Long platformId) {
 		return list("platform.id", platformId);
 	}
+	
+	public List<Videogame> findByGenreId(Long genreId) {
+		return list("genre.id", genreId);
+	}
 
 	@Transactional
 	public void persist(Videogame videogame) {

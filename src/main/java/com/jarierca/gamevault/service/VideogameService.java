@@ -24,7 +24,11 @@ public class VideogameService {
     }
     
     public List<Videogame> findByPlatformId(Long platformId) {
-        return videogameRepository.findByPlatformId(platformId);
+    	return videogameRepository.findByPlatformId(platformId);
+    }
+    
+    public List<Videogame> findByGenreId(Long genreId) {
+        return videogameRepository.findByGenreId(genreId);
     }
 
     @Transactional

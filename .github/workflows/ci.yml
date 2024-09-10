@@ -16,6 +16,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Start Docker Compose
+        run: docker-compose -f docker-compose.dev.yml up -d
+
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
@@ -25,16 +28,13 @@ jobs:
       - name: Build with Maven
         run: ./mvnw clean install
 
-      - name: Start Docker Compose
-        run: docker-compose -f docker-compose.dev.yml up -d
-
       - name: Wait for services to be ready
         run: |
           echo "Waiting for services to be ready..."
           sleep 30  # Ajusta el tiempo según sea necesario
 
       - name: Run Quarkus in dev mode
-        run: ./mvnw quarkus:dev
+        run: ./mvnw compile quarkus:dev
         env:
           QUARKUS_HTTP_PORT: 8080
 

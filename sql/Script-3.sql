@@ -1,3 +1,8 @@
+-- SHOW ALL TABLES
+SELECT TABLE_NAME
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = 'public'; 
+
 -- PLAYER
 SELECT * FROM PLAYER;
 
@@ -16,20 +21,31 @@ SELECT * FROM PUBLISHER;
 -- VIDEOGAME
 SELECT * FROM VIDEOGAME;
 
--- PLAYER_VIDEOGAME
-SELECT * FROM PLAYER_VIDEOGAME;
+-- COLLECTION
+SELECT * FROM GAMECOLLECTION;
+
+-- COLLECTION_VIDEOGAME
+SELECT * FROM COLLECTION_VIDEOGAME;
 
 
-select v.* from videogame v 
-join platform p on p.id = v.platform_id 
+SELECT V.* 
+FROM VIDEOGAME V 
+	JOIN PLATFORM P ON P.ID = V.PLATFORM_ID 
 
-select v.*
-from videogame v 
-join player_videogame pv ON pv.videogame_id = pv.player_id 
-join player p on v.id = pv.player_id 
-where p.username = 'javi'
+
+SELECT P.USERNAME, V.*
+FROM VIDEOGAME V 
+	JOIN COLLECTION_VIDEOGAME CV ON CV.VIDEOGAME_ID = V.ID 
+	JOIN GAMECOLLECTION G ON G.ID = CV.COLLECTION_ID
+	JOIN PLAYER P ON P.ID = G.PLAYER_ID 
+WHERE G.PLAYER_ID = :playerId
+GROUP BY P.USERNAME, V.id
+ORDER BY V.TITLE 
+
+
+SELECT V.TITLE, G.NAME 
+FROM VIDEOGAME V 
+	JOIN GENRE G ON G.ID = V.GENRE_ID 
+ 
 	
 
-select v.title,g."name" from videogame v 
-join genre g on g.id = v.genre_id 
- 

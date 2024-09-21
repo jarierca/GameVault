@@ -14,7 +14,8 @@ INSERT INTO PLATFORM (NAME) VALUES
 ('Nintendo Switch'),
 ('PC');
 
-INSERT INTO platform (id, "name") VALUES
+
+INSERT INTO PLATFORM (ID, "NAME") VALUES
 (1, '3DO Interactive Multiplayer'),
 (2, 'Aamber Pegasus'),
 (3, 'Acorn Archimedes'),
@@ -199,6 +200,7 @@ INSERT INTO platform (id, "name") VALUES
 (182, 'XaviXPORT'),
 (183, 'ZiNc');
 
+
 -- Datos de prueba para la tabla GENRE
 INSERT INTO GENRE (NAME) VALUES
 ('Action'),
@@ -233,6 +235,7 @@ INSERT INTO GENRE (NAME) VALUES
 ('Strategy'),
 ('Simulation');
 
+
 -- Datos de prueba para la tabla DEVELOPER
 INSERT INTO DEVELOPER (NAME) VALUES
 ('Ubisoft'),
@@ -241,6 +244,7 @@ INSERT INTO DEVELOPER (NAME) VALUES
 ('Bethesda Softworks'),
 ('Nintendo');
 
+
 -- Datos de prueba para la tabla DEVELOPER
 INSERT INTO PUBLISHER (NAME) VALUES
 ('Ubisoft'),
@@ -248,6 +252,7 @@ INSERT INTO PUBLISHER (NAME) VALUES
 ('Rockstar Games'),
 ('Bethesda Softworks'),
 ('Nintendo');
+
 
 -- Datos de prueba para la tabla VIDEOGAME
 INSERT INTO VIDEOGAME (TITLE, PLATFORM_ID, RELEASEDATE, GAMETYPE, MAXPLAYERS, OVERVIEW, ALTERNATIVENAMES, URLALT, VIDEO, GENRE_ID, DEVELOPER_ID, PUBLISHER_ID, IMAGES_ID) VALUES
@@ -259,12 +264,47 @@ INSERT INTO VIDEOGAME (TITLE, PLATFORM_ID, RELEASEDATE, GAMETYPE, MAXPLAYERS, OV
 ('Animal Crossing: New Horizons', 3, '2020-03-20', 'Social Simulation', 8, 'A social simulation video game developed by Nintendo', 'ACNH', 'https://example.com/acnh', 'https://example.com/video/acnh', 4, 5, 5, NULL);
 
 
+INSERT INTO VIDEOGAME (TITLE, PLATFORM_ID, RELEASEDATE, GAMETYPE, MAXPLAYERS, OVERVIEW, ALTERNATIVENAMES, URLALT, VIDEO, GENRE_ID, DEVELOPER_ID, PUBLISHER_ID, IMAGES_ID) values
+('FIFA 22', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 22', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 23', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 23', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 24', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 24', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 25', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 25', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 20', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 20', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 19', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 19', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 18', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 18', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 17', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 17', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 16', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 16', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 15', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 15', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 14', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 14', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 13', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 13', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 12', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 12', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 11', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 11', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 10', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 10', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 9', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 9', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL),
+('FIFA 8', 1, '2020-10-09', 'Sports', 4, 'A football simulation video game developed by EA Sports', 'FIFA 8', 'https://example.com/fifa21', 'https://example.com/video/fifa21', 1, 2, 5, NULL);
 
--- Datos de prueba para la tabla PLAYER_VIDEOGAME
-INSERT INTO PLAYER_VIDEOGAME (PLAYER_ID, VIDEOGAME_ID, DIGITAL, PHYSICAL_STATUS, PURCHASE_DATE) VALUES
-(1, 7, false, 'New', '2021-01-15'),
-(2, 8, false, 'Used', '2020-10-20'),
-(3, 9, true, null, null),
-(1, 8, false, 'Damaged', '2019-05-10'),
-(2, 10, true, null, null),
-(3, 11, false, 'New', '2020-03-25');
+
+-- Datos de prueba para la tabla gamecollection
+INSERT INTO GAMECOLLECTION (CREATEDDATE, DESCRIPTION, FAVORITE, NAME, PLAYER_ID) VALUES
+('2024-09-21 01:45:03.455', 'a', false, 'a', 4),
+('2024-09-21 01:55:50.578', 'v', false, 'a', 4),
+('2024-09-21 01:55:50.578', 'aaa', false, 'asssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', 5),
+('2024-09-21 01:55:50.578', 'Test new Desc Updated', false, 'Test new Name Updated', 5);
+('2024-09-21 01:55:50.578', 'aaaaaaaaaaaaaaa Oaaa', false, '2 colleccion Oaaa', 5);
+
+
+-- Datos de prueba para la tabla COLLECTION_VIDEOGAME
+INSERT INTO COLLECTION_VIDEOGAME (COMPLETED, DATE_ADDED, DIGITAL, HOURSPLAYED, NOTES, PHYSICAL_STATUS, PURCHASE_DATE, RATING, STATUS, TIMES_COMPLETED, COLLECTION_ID, VIDEOGAME_ID) VALUES
+(FALSE, '2024-09-20 22:23:09.545', FALSE, 0, NULL, NULL, NULL, 0, NULL, 0, 2, 8),
+(FALSE, '2024-09-20 23:02:46.789', FALSE, 0, NULL, NULL, NULL, 0, NULL, 0, 2, 12),
+(FALSE, '2024-09-20 23:03:23.894', FALSE, 0, NULL, NULL, NULL, 0, NULL, 0, 2, 7),
+(FALSE, '2024-09-20 23:03:39.920', FALSE, 0, NULL, NULL, NULL, 0, NULL, 0, 2, 10),
+(FALSE, '2024-09-21 09:40:26.874', FALSE, 0, NULL, NULL, NULL, 0, NULL, 0, 73, 11),
+(FALSE, '2024-09-21 09:40:33.911', FALSE, 0, NULL, NULL, NULL, 0, NULL, 0, 73, 7),
+(FALSE, '2024-09-21 09:40:43.375', FALSE, 0, NULL, NULL, NULL, 0, NULL, 0, 73, 12),
+(FALSE, '2024-09-21 09:40:48.345', FALSE, 0, NULL, NULL, NULL, 0, NULL, 0, 73, 8),
+(FALSE, '2024-09-21 09:40:51.970', FALSE, 0, NULL, NULL, NULL, 0, NULL, 0, 73, 9);
+
+
+
+

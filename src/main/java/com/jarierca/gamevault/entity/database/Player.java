@@ -1,6 +1,7 @@
 package com.jarierca.gamevault.entity.database;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +19,12 @@ public class Player extends PanacheEntityBase {
 	private String password;
 	private String role;
 
+	private String otpSecret;
+	
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	private Boolean otpEnabled = false;
+
+
 	public Player() {
 	}
 
@@ -27,7 +34,7 @@ public class Player extends PanacheEntityBase {
 		this.password = password;
 		this.role = role;
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -68,7 +75,22 @@ public class Player extends PanacheEntityBase {
 		this.role = role;
 	}
 
-	// Método equals y hashCode
+	public String getOtpSecret() {
+		return otpSecret;
+	}
+
+	public void setOtpSecret(String otpSecret) {
+		this.otpSecret = otpSecret;
+	}
+
+	public boolean isOtpEnabled() {
+		return otpEnabled;
+	}
+
+	public void setOtpEnabled(boolean otpEnabled) {
+		this.otpEnabled = otpEnabled;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)

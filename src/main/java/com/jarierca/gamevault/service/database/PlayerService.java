@@ -34,7 +34,7 @@ public class PlayerService {
 
 	@Transactional
 	public void updatePlayer(Player player) {
-		playerRepository.persist(player);
+		playerRepository.getEntityManager().merge(player);
 	}
 
 	@Transactional

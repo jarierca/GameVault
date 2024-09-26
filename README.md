@@ -4,6 +4,34 @@ This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
 If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
 
+
+You can modify the section about configuring keys for JWT to include the specific path for the public key. Here’s the updated version:
+
+## Configuring Keys for JWT
+
+To ensure that the application works correctly with JWT, you need to configure the signing keys. Please follow these steps:
+
+1. **Generate the Keys**: If you haven't done so already, generate a public and private key pair for JWT. You can use tools like `openssl` for this. For example:
+   ```bash
+   openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
+   openssl rsa -pubout -in private_key.pem -out public_key.pem
+   ```
+
+2. **Store the Keys**: Keep the private key in a secure location and do not upload it to your repository. You can use environment variables or a secrets manager to store the private key. The public key can be shared and should be placed in the following directory:
+   ```
+   /GameVault/src/main/resources/META-INF/resources/
+   ```
+
+3. **Configure the Application**: Ensure that your application is set up to use the keys. This may involve modifying the `application.properties` or `application.yml` configuration file in Quarkus. For example:
+   ```properties
+   mp.jwt.verify.publickey=classpath:META-INF/resources/public_key.pem
+   mp.jwt.sign.privatekey=classpath:META-INF/resources/private_key.pem
+   ```
+
+4. **Restart the Application**: After making the changes, restart your application for the new configuration to take effect.
+
+With these configurations, your application will be ready to handle JWT securely.
+
 ## Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:
@@ -230,4 +258,5 @@ public void testDeletePlayer() {
 ```bash
 curl -X DELETE http://localhost:8080/players/$testUsername
 ```
+
 

@@ -42,3 +42,8 @@ nb-configuration.xml
 
 # Plugin directory
 /.quarkus/cli/plugins/
+
+# Ignore any other sensitive files
+*.key
+*.pem
+

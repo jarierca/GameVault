@@ -71,6 +71,7 @@ public class CollectionVideogameService {
 		return create(new CollectionVideogame(gameCollection, game));
 	}
 
+	@Transactional
 	public CollectionVideogame update(CollectionVideogame collectionVideogame) {
 		if (collectionVideogameRepository.isPersistent(collectionVideogame)) {
 			return collectionVideogameRepository.getEntityManager().merge(collectionVideogame);
@@ -82,13 +83,15 @@ public class CollectionVideogameService {
 	public CollectionVideogame update(Long id, CollectionVideogame updatedCollectionVideogame) {
 		CollectionVideogame existingCollectionVideogame = collectionVideogameRepository.findById(id);
 		if (existingCollectionVideogame != null) {
-			// Setters to modify some fields
-//			existingCollection.setName(updatedCollectionVideogame.get());
+			
+			existingCollectionVideogame.copyFrom(updatedCollectionVideogame);
+
 			return existingCollectionVideogame;
 		}
 		return null;
 	}
 
+	@Transactional
 	public boolean delete(Long id) {
 		return collectionVideogameRepository.deleteById(id);
 	}

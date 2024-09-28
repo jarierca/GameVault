@@ -7,7 +7,6 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import com.jarierca.gamevault.entity.collection.GameCollection;
 import com.jarierca.gamevault.service.collection.GameCollectionService;
 
-import io.smallrye.jwt.build.JwtException;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -18,13 +17,11 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 
 @Path("/my-collections")
-@RolesAllowed({"user", "admin"}) 
+@RolesAllowed({ "user", "admin" })
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class GameCollectionResource {
@@ -36,49 +33,59 @@ public class GameCollectionResource {
 	GameCollectionService collectionService;
 
 	@GET
-	public Response getAllCollectionsByPlayerId(@Context SecurityContext ctx) {
-		String playerId = jwt.getSubject();
+	public Response getAllCollectionsByPlayerId() {
 
-		if (playerId == null) {
-			throw new JwtException("JWT not found");
-		}
+		List<GameCollection> collections = collectionService.findAllCollectionsByPlayerId();
 
-		List<GameCollection> collections = collectionService.findAllCollectionsByPlayerId(Long.parseLong(playerId));
 		return Response.ok(collections).build();
 	}
 
 	@GET
 	@Path("/{id}")
-	public Response getCollection(@PathParam("id") Long id) {
-		GameCollection collection = collectionService.findById(id);
+	public Response getCollection(@PathParam("id") Long collectionId) {
+		GameCollection collection = collectionService.findByPlayerIdAndCollectionId(collectionId);
+
 		return collection != null ? Response.ok(collection).build()
 				: Response.status(Response.Status.NOT_FOUND).build();
 	}
 
 	@POST
-	public Response createCollection(@Context SecurityContext ctx, GameCollection collection) {
-		String playerId = jwt.getSubject();
-
-		if (playerId == null) {
-			throw new JwtException("JWT not found");
-		}
-
-		GameCollection created = collectionService.create(collection, Long.parseLong(playerId));
+	public Response createCollection(GameCollection collection) {
+		GameCollection created = collectionService.create(collection);
 
 		return Response.status(Response.Status.CREATED).entity(created).build();
 	}
 
 	@PUT
 	@Path("/{id}")
-	public Response updateCollection(@PathParam("id") Long id, GameCollection updatedCollection) {
-		GameCollection updated = collectionService.update(id, updatedCollection);
+	public Response updateCollection(@PathParam("id") Long collectionId, GameCollection updatedCollection) {
+		if (updatedCollection == null) {
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+
+		try {
+			collectionService.validatePlayerCollection(collectionId);
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
+		}
+
+		GameCollection updated = collectionService.update(collectionId, updatedCollection);
+
 		return updated != null ? Response.ok(updated).build() : Response.status(Response.Status.NOT_FOUND).build();
 	}
 
 	@DELETE
 	@Path("/{id}")
-	public Response deleteCollection(@PathParam("id") Long id) {
-		boolean deleted = collectionService.delete(id);
+	public Response deleteCollection(@PathParam("id") Long collectionId) {
+
+		try {
+			collectionService.validatePlayerCollection(collectionId);
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.FORBIDDEN).entity(e.getMessage()).build();
+		}
+
+		boolean deleted = collectionService.delete(collectionId);
+
 		if (deleted) {
 			return Response.noContent().build();
 		} else {

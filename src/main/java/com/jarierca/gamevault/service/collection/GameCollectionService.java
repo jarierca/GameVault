@@ -3,9 +3,9 @@ package com.jarierca.gamevault.service.collection;
 import java.util.List;
 
 import com.jarierca.gamevault.entity.collection.GameCollection;
-import com.jarierca.gamevault.entity.database.Player;
+import com.jarierca.gamevault.entity.collection.Player;
 import com.jarierca.gamevault.repository.collection.GameCollectionRepository;
-import com.jarierca.gamevault.service.database.PlayerService;
+import com.jarierca.gamevault.service.auth.AuthService;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -16,27 +16,50 @@ public class GameCollectionService {
 
 	@Inject
 	GameCollectionRepository collectionRepository;
-	
+
 	@Inject
 	PlayerService playerService;
+	
+	@Inject
+	AuthService authService;
 
 	public List<GameCollection> findAll() {
 		return collectionRepository.listAll();
 	}
-	
-	public List<GameCollection> findAllCollectionsByPlayerId(Long playerId) {
-        return collectionRepository.findAllCollectionsByPlayerId(playerId);
-    }
+
+	public List<GameCollection> findAllCollectionsByPlayerId() {
+		Long playerId = authService.getAuthenticatedUserId();
+		
+		return collectionRepository.findAllCollectionsByPlayerId(playerId);
+	}
 
 	public GameCollection findById(Long id) {
 		return collectionRepository.findById(id);
 	}
 
+	public GameCollection findByPlayerIdAndCollectionId(Long collectionId) {
+		Long playerId = authService.getAuthenticatedUserId();
+		
+		return collectionRepository.findByPlayerIdAndCollectionId(playerId, collectionId);
+	}
+	
+	public void validatePlayerCollection(Long collectionId) {
+		Long playerId = authService.getAuthenticatedUserId();
+
+		GameCollection existingCollection = collectionRepository
+				.findByPlayerIdAndCollectionId(playerId, collectionId);
+
+		if (existingCollection == null) {
+			throw new IllegalArgumentException("Yo can't modify this collection.");
+		}
+	}
+
 	@Transactional
-	public GameCollection create(GameCollection collection, Long playerId) {
+	public GameCollection create(GameCollection collection) {
+		Long playerId = authService.getAuthenticatedUserId();
 		
 		Player player = playerService.findById(playerId);
-		
+
 		collectionRepository.persist(new GameCollection(collection, player));
 		return collection;
 	}
@@ -45,8 +68,10 @@ public class GameCollectionService {
 	public GameCollection update(Long id, GameCollection updatedCollection) {
 		GameCollection existingCollection = collectionRepository.findById(id);
 		if (existingCollection != null) {
+			
 			existingCollection.setName(updatedCollection.getName());
 			existingCollection.setDescription(updatedCollection.getDescription());
+			
 			return existingCollection;
 		}
 		return null;

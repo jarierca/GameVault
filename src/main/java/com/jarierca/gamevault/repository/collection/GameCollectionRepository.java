@@ -13,4 +13,8 @@ public class GameCollectionRepository implements PanacheRepository<GameCollectio
 	public List<GameCollection> findAllCollectionsByPlayerId(Long playerId) {
 		return find("player.id", playerId).list();
 	}
+
+	public GameCollection findByPlayerIdAndCollectionId(Long playerId, Long collectionId) {
+		return find("player.id = ?1 AND id = ?2", playerId, collectionId).firstResult();
+	}
 }

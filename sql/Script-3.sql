@@ -47,11 +47,21 @@ SELECT cv.*
 from COLLECTION_VIDEOGAME CV 
 join GAMECOLLECTION G ON CV.COLLECTION_ID = g.ID 
 join PLAYER P on p.ID = g.PLAYER_ID 
-where p.ID = 6
+where p.ID = :playerId
+	and cv.ID = :collectionVideogameId 
 
+SELECT G 
+FROM GAMECOLLECTION G 
+JOIN PLAYER P ON P.ID = G.PLAYER_ID 
+WHERE P.ID = :playerId 
+	AND G.ID = :collectionId
+	
+	
 SELECT V.TITLE, G.NAME 
 FROM VIDEOGAME V 
 	JOIN GENRE G ON G.ID = V.GENRE_ID 
  
+	
+	
 	
 

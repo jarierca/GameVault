@@ -20,7 +20,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/collection-videogames")
-@RolesAllowed({"user", "admin"}) 
+@RolesAllowed({ "user", "admin" })
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class CollectionVideogameResource {
@@ -62,9 +62,14 @@ public class CollectionVideogameResource {
 	@PUT
 	@Path("/{id}")
 	public Response updateCollectionVideogame(@PathParam("id") Long id, CollectionVideogame collectionVideogame) {
-		collectionVideogame.setId(id);
-		CollectionVideogame updated = collectionVideogameService.update(collectionVideogame);
-		return updated != null ? Response.ok(updated).build() : Response.status(Response.Status.NOT_FOUND).build();
+		if (collectionVideogame == null) {
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
+
+		CollectionVideogame updated = collectionVideogameService.update(id, collectionVideogame);
+
+		return updated != null ? Response.ok(updated).build()
+				: Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 	}
 
 	@DELETE

@@ -27,16 +27,17 @@ public class CollectionVideogame extends PanacheEntityBase {
 	@ManyToOne
 	private Videogame videogame;
 
-	private boolean digital;
+	private Boolean digital;
 
 	private String status;
-	private boolean completed;
+	private Boolean completed;
 
 	@Column(name = "times_completed")
 	private int timesCompleted;
 
-	private int hoursPlayed;
-	private int rating;
+	@Column(name = "hours_played")
+	private Integer hoursPlayed;
+	private Float rating;
 	private String notes;
 
 	@Column(name = "date_added")
@@ -58,8 +59,8 @@ public class CollectionVideogame extends PanacheEntityBase {
 		this.dateAdded = new Date();
 	}
 	
-	public CollectionVideogame(GameCollection collection, Videogame videogame, boolean digital, String status,
-			boolean completed, int timesCompleted, int hoursPlayed, int rating, String notes, Date dateAdded,
+	public CollectionVideogame(GameCollection collection, Videogame videogame, Boolean digital, String status,
+			Boolean completed, Integer timesCompleted, Integer hoursPlayed, Float rating, String notes, Date dateAdded,
 			String physicalStatus, Date purchaseDate) {
 		super();
 		this.collection = collection;
@@ -76,6 +77,25 @@ public class CollectionVideogame extends PanacheEntityBase {
 		this.purchaseDate = purchaseDate;
 	}
 
+	/**
+	 * Modifies the properties of this CollectionVideogame object by copying the values from the provided CollectionVideogame object.
+	 * Only the modifiable fields of the CollectionVideogame are updated.
+	 * 
+	 * @param other The CollectionVideogame object to copy properties from.
+	 */
+	public void copyFrom(CollectionVideogame other) {
+	    this.setDigital(other.isDigital());
+	    this.setStatus(other.getStatus());
+	    this.setCompleted(other.isCompleted());
+	    this.setTimesCompleted(other.getTimesCompleted());
+	    this.setHoursPlayed(other.getHoursPlayed());
+	    this.setRating(other.getRating());
+	    this.setNotes(other.getNotes());
+	    this.setDateAdded(other.getDateAdded());
+	    this.setPhysicalStatus(other.getPhysicalStatus());
+	    this.setPurchaseDate(other.getPurchaseDate());
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -100,11 +120,11 @@ public class CollectionVideogame extends PanacheEntityBase {
 		this.videogame = videogame;
 	}
 
-	public boolean isDigital() {
+	public Boolean isDigital() {
 		return digital;
 	}
 
-	public void setDigital(boolean digital) {
+	public void setDigital(Boolean digital) {
 		this.digital = digital;
 	}
 
@@ -116,35 +136,35 @@ public class CollectionVideogame extends PanacheEntityBase {
 		this.status = status;
 	}
 
-	public boolean isCompleted() {
+	public Boolean isCompleted() {
 		return completed;
 	}
 
-	public void setCompleted(boolean completed) {
+	public void setCompleted(Boolean completed) {
 		this.completed = completed;
 	}
 
-	public int getTimesCompleted() {
+	public Integer getTimesCompleted() {
 		return timesCompleted;
 	}
 
-	public void setTimesCompleted(int timesCompleted) {
+	public void setTimesCompleted(Integer timesCompleted) {
 		this.timesCompleted = timesCompleted;
 	}
 
-	public int getHoursPlayed() {
+	public Integer getHoursPlayed() {
 		return hoursPlayed;
 	}
 
-	public void setHoursPlayed(int hoursPlayed) {
+	public void setHoursPlayed(Integer hoursPlayed) {
 		this.hoursPlayed = hoursPlayed;
 	}
 
-	public int getRating() {
+	public Float getRating() {
 		return rating;
 	}
 
-	public void setRating(int rating) {
+	public void setRating(Float rating) {
 		this.rating = rating;
 	}
 

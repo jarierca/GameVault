@@ -2,9 +2,9 @@ package com.jarierca.gamevault.resource.auth;
 
 import java.util.Optional;
 
-import com.jarierca.gamevault.entity.database.Player;
+import com.jarierca.gamevault.entity.collection.Player;
 import com.jarierca.gamevault.service.auth.OTPService;
-import com.jarierca.gamevault.service.database.PlayerService;
+import com.jarierca.gamevault.service.collection.PlayerService;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;

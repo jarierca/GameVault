@@ -17,7 +17,6 @@ public class Publisher extends PanacheEntityBase {
 
 	private String name;
 	private String description;
-
 	private Date date;
 
 	public Publisher() {

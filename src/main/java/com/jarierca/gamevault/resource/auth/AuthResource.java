@@ -1,19 +1,14 @@
 package com.jarierca.gamevault.resource.auth;
 
-import java.time.Duration;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jarierca.gamevault.entity.database.Player;
-import com.jarierca.gamevault.repository.database.PlayerRepository;
+import com.jarierca.gamevault.entity.collection.Player;
+import com.jarierca.gamevault.repository.collection.PlayerRepository;
+import com.jarierca.gamevault.service.auth.AuthService;
 import com.jarierca.gamevault.service.auth.OTPService;
 import com.jarierca.gamevault.service.auth.PasswordService;
 
-import io.smallrye.jwt.build.Jwt;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -31,6 +26,9 @@ public class AuthResource {
 	PasswordService passwordService;
 
 	@Inject
+	AuthService authService;
+
+	@Inject
 	OTPService otpService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AuthResource.class);
@@ -38,17 +36,17 @@ public class AuthResource {
 	@POST
 	@Path("/login")
 	@Consumes("application/json")
-    public Response login(Player playerCredentials) {
-        Player player = playerRepository.findByUsername(playerCredentials.getUsername());
-        if (player != null && passwordService.checkPassword(playerCredentials.getPassword(), player.getPassword())) {
-            if (player.isOtpEnabled()) {
-                return Response.ok(new LoginResponse("OTP_REQUIRED", player.getId())).build();
-            }
+	public Response login(Player playerCredentials) {
+		Player player = playerRepository.findByUsername(playerCredentials.getUsername());
+		if (player != null && passwordService.checkPassword(playerCredentials.getPassword(), player.getPassword())) {
+			if (player.isOtpEnabled()) {
+				return Response.ok(new LoginResponse("OTP_REQUIRED", player.getId())).build();
+			}
 
-            return generateTokenResponse(player);
-        }
-        return Response.status(Response.Status.UNAUTHORIZED).build();
-    }
+			return generateTokenResponse(player);
+		}
+		return Response.status(Response.Status.UNAUTHORIZED).build();
+	}
 
 	@POST
 	@Path("/login-otp")
@@ -67,21 +65,15 @@ public class AuthResource {
 			}
 
 			return Response.ok(generateTokenResponse(player).getEntity()).build();
-			
+
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error validating OTP").build();
 		}
 	}
 
 	private Response generateTokenResponse(Player player) {
-		Set<String> roles = new HashSet<>();
-		roles.add(player.getRole());
+		String token = authService.generateToken(player.getUsername(), player.getId(), player.getRole());
 
-		String token = Jwt.issuer("dev-gamevault").upn(player.getUsername()).groups(roles)
-				.subject(String.valueOf(player.getId())).claim("playerId", player.getId())
-				.expiresIn(Duration.ofHours(1)).sign();
-
-		
 		LOG.info("JWT Token generated for user: {}", player.getUsername());
 		LOG.info("Generated JWT Token: {}", token);
 
@@ -118,24 +110,24 @@ public class AuthResource {
 			return token;
 		}
 	}
-	
+
 	public static class LoginResponse {
-        private String message;
-        private Long playerId;
+		private String message;
+		private Long playerId;
 
-        public LoginResponse(String message, Long playerId) {
-            this.message = message;
-            this.playerId = playerId;
-        }
+		public LoginResponse(String message, Long playerId) {
+			this.message = message;
+			this.playerId = playerId;
+		}
 
-        public String getMessage() {
-            return message;
-        }
+		public String getMessage() {
+			return message;
+		}
 
-        public Long getPlayerId() {
-            return playerId;
-        }
-    }
+		public Long getPlayerId() {
+			return playerId;
+		}
+	}
 
 	public static class OtpVerificationRequest {
 		private Long playerId;

@@ -15,35 +15,23 @@ public class Videogame extends PanacheEntityBase {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	
 	private String title;
-
 	@ManyToOne
 	private Platform platform;
-
 	private Date releaseDate;
-
 	private String gameType;
-
 	private Integer maxPlayers;
-
 	private String overview;
-
 	private String alternativeNames;
-
 	private String urlAlt;
-
 	private String video;
-
 	@ManyToOne
 	private Genre genre;
-
 	@ManyToOne
 	private Developer developer;
-
 	@ManyToOne
 	private Publisher publisher;
-
 	@ManyToOne
 	private Images images;
 

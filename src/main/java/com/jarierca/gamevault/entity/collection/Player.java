@@ -1,4 +1,4 @@
-package com.jarierca.gamevault.entity.database;
+package com.jarierca.gamevault.entity.collection;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
@@ -18,9 +18,7 @@ public class Player extends PanacheEntityBase {
 	private String email;
 	private String password;
 	private String role;
-
 	private String otpSecret;
-	
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private Boolean otpEnabled = false;
 

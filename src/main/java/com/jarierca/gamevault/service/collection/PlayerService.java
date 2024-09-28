@@ -1,9 +1,9 @@
-package com.jarierca.gamevault.service.database;
+package com.jarierca.gamevault.service.collection;
 
 import java.util.List;
 
-import com.jarierca.gamevault.entity.database.Player;
-import com.jarierca.gamevault.repository.database.PlayerRepository;
+import com.jarierca.gamevault.entity.collection.Player;
+import com.jarierca.gamevault.repository.collection.PlayerRepository;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

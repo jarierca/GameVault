@@ -9,6 +9,7 @@ import com.jarierca.gamevault.entity.database.Videogame;
 import com.jarierca.gamevault.repository.collection.CollectionVideogameRepository;
 import com.jarierca.gamevault.repository.collection.GameCollectionRepository;
 import com.jarierca.gamevault.repository.database.VideogameRepository;
+import com.jarierca.gamevault.service.auth.AuthService;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -19,10 +20,15 @@ public class CollectionVideogameService {
 
 	@Inject
 	CollectionVideogameRepository collectionVideogameRepository;
+
 	@Inject
 	VideogameRepository videogameService;
+
 	@Inject
 	GameCollectionRepository gameCollectionService;
+
+	@Inject
+	AuthService authService;
 
 	public List<CollectionVideogame> findAll() {
 		return collectionVideogameRepository.listAll();
@@ -31,16 +37,36 @@ public class CollectionVideogameService {
 	public CollectionVideogame findById(Long id) {
 		return collectionVideogameRepository.findById(id);
 	}
+	
+	public CollectionVideogame findByIdAndPlayerId(Long collectionVideogameId) {
+		Long playerId = authService.getAuthenticatedUserId();
+
+		return collectionVideogameRepository
+				.findByPlayerIdAndCollectionVideogameId(playerId, collectionVideogameId);
+	}
 
 	public List<CollectionVideogame> getCollectionVideogameByCollectionId(Long gamecollectionId) {
+		Long playerId = authService.getAuthenticatedUserId();
+		
 		List<CollectionVideogame> collectionVideogames = collectionVideogameRepository
-				.findByGameCollectionId(gamecollectionId);
+				.findByPlayerIdAndGameCollectionId(playerId, gamecollectionId);
 
 		if (collectionVideogames != null) {
 			return collectionVideogames;
 		}
-		
+
 		return Collections.emptyList();
+	}
+
+	public void validatePlayerCollectionVideogames(Long collectionVideogameId) {
+		Long playerId = authService.getAuthenticatedUserId();
+
+		CollectionVideogame existingCollection = collectionVideogameRepository
+				.findByPlayerIdAndCollectionVideogameId(playerId, collectionVideogameId);
+
+		if (existingCollection == null) {
+			throw new IllegalArgumentException("Yo can't modify this collection videogame.");
+		}
 	}
 
 	@Transactional
@@ -78,12 +104,13 @@ public class CollectionVideogameService {
 		}
 		return null;
 	}
-	
+
 	@Transactional
 	public CollectionVideogame update(Long id, CollectionVideogame updatedCollectionVideogame) {
 		CollectionVideogame existingCollectionVideogame = collectionVideogameRepository.findById(id);
+
 		if (existingCollectionVideogame != null) {
-			
+
 			existingCollectionVideogame.copyFrom(updatedCollectionVideogame);
 
 			return existingCollectionVideogame;

@@ -17,7 +17,6 @@ public class Developer extends PanacheEntityBase {
 
 	private String name;
 	private String description;
-
 	private Date date;
 
 	public Developer() {

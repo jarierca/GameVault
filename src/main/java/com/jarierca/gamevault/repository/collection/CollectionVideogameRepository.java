@@ -25,10 +25,7 @@ public class CollectionVideogameRepository implements PanacheRepository<Collecti
 	}
 
 	public CollectionVideogame findByPlayerIdAndCollectionVideogameId(Long playerId, Long collectionVideogameId) {
-        return find("SELECT cv FROM CollectionVideogame cv " +
-                    "JOIN GameCollection g ON cv.id = g.id " +
-                    "JOIN Player p ON p.id = g.player.id " +
-                    "WHERE p.id = ?1 AND cv.id = ?2", playerId, collectionVideogameId)
+        return find("collection.player.id = ?1 AND id = ?2", playerId, collectionVideogameId)
         		.firstResult();
     }
 }

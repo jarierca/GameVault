@@ -1,5 +1,7 @@
 package com.jarierca.gamevault.entity.collection;
 
+import com.jarierca.gamevault.service.auth.PasswordService;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +23,6 @@ public class Player extends PanacheEntityBase {
 	private String otpSecret;
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private Boolean otpEnabled = false;
-
 
 	public Player() {
 	}
@@ -104,5 +105,18 @@ public class Player extends PanacheEntityBase {
 	@Override
 	public int hashCode() {
 		return id != null ? id.hashCode() : 0;
+	}
+
+	public void copyProperties(Player existingPlayer, Player player) {
+		
+		if (!player.getEmail().isBlank() && !player.getEmail().equals(existingPlayer.getEmail())) {
+			existingPlayer.setEmail(player.getEmail());
+		}
+
+		if (!player.getPassword().isBlank()) {
+			PasswordService passwordService = new PasswordService();
+			String hashedPassword = passwordService.hashPassword(player.getPassword());
+			existingPlayer.setPassword(hashedPassword);
+		}
 	}
 }

@@ -3,7 +3,9 @@ package com.jarierca.gamevault.resource.collection;
 import java.util.List;
 
 import com.jarierca.gamevault.entity.collection.Player;
+import com.jarierca.gamevault.entity.collection.dto.AccountPlayerDTO;
 import com.jarierca.gamevault.service.auth.AuthService;
+import com.jarierca.gamevault.service.auth.PasswordService;
 import com.jarierca.gamevault.service.collection.PlayerService;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -31,6 +33,9 @@ public class PlayerResource {
 	@Inject
 	AuthService authService;
 
+	@Inject
+	PasswordService passwordService;
+
 	@GET
 	public List<Player> getAllPlayers() {
 		return playerService.listAll();
@@ -40,10 +45,7 @@ public class PlayerResource {
 	@Path("/{id}")
 	public Player getPlayer(@PathParam("id") Long id) {
 		Long playerId = authService.getAuthenticatedUserId();
-
 		if (id.equals(playerId)) {
-			playerService.deletePlayer(playerId);
-
 			return playerService.findById(id);
 		}
 		return null;
@@ -57,10 +59,19 @@ public class PlayerResource {
 
 	@PUT
 	@Path("/{id}")
-	public Response updatePlayer(Player player) {
+	public Response updatePlayer(AccountPlayerDTO playerDTO) {
+		Player player = playerDTO.getPlayer();
 		Long playerId = authService.getAuthenticatedUserId();
 		if (player.getId().equals(playerId)) {
-			playerService.updatePlayer(player);
+
+			Player existingPlayer = playerService.findById(playerId);
+
+			if (!passwordService.checkPassword(playerDTO.getCurrentPassword(), existingPlayer.getPassword())) {
+				return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid current password").build();
+			}
+
+			player.copyProperties(existingPlayer, player);
+			playerService.updatePlayer(existingPlayer);
 
 			return Response.ok().build();
 		}
@@ -69,9 +80,16 @@ public class PlayerResource {
 
 	@DELETE
 	@Path("/{id}")
-	public Response deletePlayer(@PathParam("id") Long id) {
+	public Response deletePlayer(AccountPlayerDTO playerDTO) {
 		Long playerId = authService.getAuthenticatedUserId();
-		if (id.equals(playerId)) {
+		
+		if (playerDTO.getPlayer().getId().equals(playerId)) {
+			Player existingPlayer = playerService.findById(playerId);
+			
+			if (!passwordService.checkPassword(playerDTO.getCurrentPassword(), existingPlayer.getPassword())) {
+				return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid current password").build();
+			}
+
 			playerService.deletePlayer(playerId);
 
 			return Response.noContent().build();

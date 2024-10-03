@@ -1,5 +1,7 @@
 package com.jarierca.gamevault.entity.collection;
 
+import java.time.LocalDateTime;
+
 import com.jarierca.gamevault.service.auth.PasswordService;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -23,6 +25,9 @@ public class Player extends PanacheEntityBase {
 	private String otpSecret;
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private Boolean otpEnabled = false;
+
+	private Integer failedLoginAttempts;
+	private LocalDateTime lastLoginAttempt;
 
 	public Player() {
 	}
@@ -90,6 +95,22 @@ public class Player extends PanacheEntityBase {
 		this.otpEnabled = otpEnabled;
 	}
 
+	public Integer getFailedLoginAttempts() {
+		return failedLoginAttempts;
+	}
+
+	public void setFailedLoginAttempts(Integer failedLoginAttempts) {
+		this.failedLoginAttempts = failedLoginAttempts;
+	}
+
+	public LocalDateTime getLastLoginAttempt() {
+		return lastLoginAttempt;
+	}
+
+	public void setLastLoginAttempt(LocalDateTime lastLoginAttempt) {
+		this.lastLoginAttempt = lastLoginAttempt;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -108,7 +129,7 @@ public class Player extends PanacheEntityBase {
 	}
 
 	public void copyProperties(Player existingPlayer, Player player) {
-		
+
 		if (!player.getEmail().isBlank() && !player.getEmail().equals(existingPlayer.getEmail())) {
 			existingPlayer.setEmail(player.getEmail());
 		}

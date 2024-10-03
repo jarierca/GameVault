@@ -1,5 +1,7 @@
 package com.jarierca.gamevault.resource.auth;
 
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,19 +35,45 @@ public class AuthResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AuthResource.class);
 
+	private static final int MAX_ATTEMPTS = 3;
+	private static final long BLOCK_TIME = 5; // Minutes
+
 	@POST
 	@Path("/login")
 	@Consumes("application/json")
-	public Response login(Player playerCredentials) {
-		Player player = playerRepository.findByUsername(playerCredentials.getUsername());
-		if (player != null && passwordService.checkPassword(playerCredentials.getPassword(), player.getPassword())) {
-			if (player.isOtpEnabled()) {
-				return Response.ok(new LoginResponse("OTP_REQUIRED", player.getId())).build();
-			}
-
-			return generateTokenResponse(player);
+	public Response login(LoginRequest request) {
+		Player player = playerRepository.findByUsername(request.getUsername());
+		if (player == null) {
+			return Response.status(Response.Status.NOT_FOUND).entity("Player not found").build();
 		}
-		return Response.status(Response.Status.UNAUTHORIZED).build();
+
+		if (player.getFailedLoginAttempts() != null && player.getFailedLoginAttempts() >= MAX_ATTEMPTS) {
+			LocalDateTime lastAttempt = player.getLastLoginAttempt();
+			LocalDateTime blockEndTime = lastAttempt.plusMinutes(BLOCK_TIME);
+			if (LocalDateTime.now().isBefore(blockEndTime)) {
+				return Response.status(Response.Status.FORBIDDEN)
+						.entity("Account is temporarily locked. Try again after " + BLOCK_TIME + " minutes.").build();
+			} else {
+				player.setFailedLoginAttempts(0);
+			}
+		}
+
+		if (!passwordService.checkPassword(request.getPassword(), player.getPassword())) {
+			player.setFailedLoginAttempts(player.getFailedLoginAttempts() + 1);
+			player.setLastLoginAttempt(LocalDateTime.now());
+			playerRepository.save(player);
+			return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+		}
+		
+		if (player.isOtpEnabled()) {
+			return Response.ok(new LoginResponse("OTP_REQUIRED", player.getId())).build();
+		}
+
+		player.setFailedLoginAttempts(0);
+		player.setLastLoginAttempt(LocalDateTime.now());
+		playerRepository.save(player);
+
+		return Response.ok(generateTokenResponse(player).getEntity()).build();
 	}
 
 	@POST
@@ -53,22 +81,39 @@ public class AuthResource {
 	@Consumes("application/json")
 	@Produces("application/json")
 	public Response verifyOtp(OtpVerificationRequest request) {
-		Player player = playerRepository.findById(request.getPlayerId());
+		Player player = playerRepository.findByUsername(request.getUsername());
 		if (player == null) {
 			return Response.status(Response.Status.NOT_FOUND).entity("Player not found").build();
+		}
+
+		if (player.getFailedLoginAttempts() >= MAX_ATTEMPTS) {
+			LocalDateTime lastAttempt = player.getLastLoginAttempt();
+			LocalDateTime blockEndTime = lastAttempt.plusMinutes(BLOCK_TIME);
+			if (LocalDateTime.now().isBefore(blockEndTime)) {
+				return Response.status(Response.Status.FORBIDDEN)
+						.entity("Account is temporarily locked. Try again after " + BLOCK_TIME + " minutes.").build();
+			} else {
+				player.setFailedLoginAttempts(0);
+			}
 		}
 
 		try {
 			boolean isValidOtp = otpService.verifyOTP(player.getOtpSecret(), request.getOtp());
 			if (!isValidOtp) {
+				player.setFailedLoginAttempts(player.getFailedLoginAttempts() + 1);
+				player.setLastLoginAttempt(LocalDateTime.now());
+				playerRepository.save(player);
 				return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid OTP").build();
 			}
-
-			return Response.ok(generateTokenResponse(player).getEntity()).build();
-
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error validating OTP").build();
 		}
+
+		player.setFailedLoginAttempts(0);
+		player.setLastLoginAttempt(LocalDateTime.now());
+		playerRepository.save(player);
+
+		return Response.ok(generateTokenResponse(player).getEntity()).build();
 	}
 
 	private Response generateTokenResponse(Player player) {
@@ -111,6 +156,43 @@ public class AuthResource {
 		}
 	}
 
+	public static class LoginRequest {
+		private String message;
+		private Long playerId;
+
+		private String username;
+		private String password;
+
+		public LoginRequest(String message, Long playerId) {
+			this.message = message;
+			this.playerId = playerId;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+
+		public Long getPlayerId() {
+			return playerId;
+		}
+
+		public String getUsername() {
+			return username;
+		}
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+
+		public String getPassword() {
+			return password;
+		}
+
+		public void setPassword(String password) {
+			this.password = password;
+		}
+	}
+
 	public static class LoginResponse {
 		private String message;
 		private Long playerId;
@@ -131,6 +213,8 @@ public class AuthResource {
 
 	public static class OtpVerificationRequest {
 		private Long playerId;
+		private String username;
+		private String password;
 		private String otp;
 
 		public Long getPlayerId() {
@@ -141,6 +225,22 @@ public class AuthResource {
 			this.playerId = playerId;
 		}
 
+		public String getUsername() {
+			return username;
+		}
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+
+		public String getPassword() {
+			return password;
+		}
+
+		public void setPassword(String password) {
+			this.password = password;
+		}
+
 		public String getOtp() {
 			return otp;
 		}
@@ -148,5 +248,6 @@ public class AuthResource {
 		public void setOtp(String otp) {
 			this.otp = otp;
 		}
+
 	}
 }

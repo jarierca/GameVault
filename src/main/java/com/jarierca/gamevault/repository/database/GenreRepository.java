@@ -7,5 +7,4 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class GenreRepository implements PanacheRepository<Genre> {
-    // Métodos de consulta personalizados, si es necesario
 }

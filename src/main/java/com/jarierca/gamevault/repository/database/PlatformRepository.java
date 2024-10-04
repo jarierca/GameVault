@@ -7,5 +7,4 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class PlatformRepository implements PanacheRepository<Platform> {
-    // Métodos de consulta personalizados, si es necesario
 }

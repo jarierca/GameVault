@@ -71,7 +71,7 @@ public class GameCollectionService {
 			
 			existingCollection.setName(updatedCollection.getName());
 			existingCollection.setDescription(updatedCollection.getDescription());
-			
+
 			return existingCollection;
 		}
 		return null;

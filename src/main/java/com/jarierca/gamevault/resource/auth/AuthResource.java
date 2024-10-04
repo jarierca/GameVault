@@ -64,7 +64,7 @@ public class AuthResource {
 			playerRepository.save(player);
 			return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
 		}
-		
+
 		if (player.isOtpEnabled()) {
 			return Response.ok(new LoginResponse("OTP_REQUIRED", player.getId())).build();
 		}
@@ -86,7 +86,7 @@ public class AuthResource {
 			return Response.status(Response.Status.NOT_FOUND).entity("Player not found").build();
 		}
 
-		if (player.getFailedLoginAttempts() >= MAX_ATTEMPTS) {
+		if (player.getFailedLoginAttempts() != null && player.getFailedLoginAttempts() >= MAX_ATTEMPTS) {
 			LocalDateTime lastAttempt = player.getLastLoginAttempt();
 			LocalDateTime blockEndTime = lastAttempt.plusMinutes(BLOCK_TIME);
 			if (LocalDateTime.now().isBefore(blockEndTime)) {

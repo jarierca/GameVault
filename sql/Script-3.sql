@@ -63,5 +63,7 @@ FROM VIDEOGAME V
  
 	
 	
-	
+select * from GAMECOLLECTION G
+join PLAYER P on p.ID = g.PLAYER_ID 
+where p.USERNAME = 'devi'
 

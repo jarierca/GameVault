@@ -82,10 +82,10 @@ public class PlayerResource {
 	@Path("/{id}")
 	public Response deletePlayer(AccountPlayerDTO playerDTO) {
 		Long playerId = authService.getAuthenticatedUserId();
-		
+
 		if (playerDTO.getPlayer().getId().equals(playerId)) {
 			Player existingPlayer = playerService.findById(playerId);
-			
+
 			if (!passwordService.checkPassword(playerDTO.getCurrentPassword(), existingPlayer.getPassword())) {
 				return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid current password").build();
 			}

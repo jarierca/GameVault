@@ -2,8 +2,8 @@ package com.jarierca.gamevault.resource.database;
 
 import java.util.List;
 
-import com.jarierca.gamevault.entity.database.Developer;
-import com.jarierca.gamevault.service.database.DeveloperService;
+import com.jarierca.gamevault.entity.database.Publisher;
+import com.jarierca.gamevault.service.database.PublisherService;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -17,42 +17,42 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/developers")
+@Path("/publishers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class DeveloperResource {
+public class PublisherResource {
 
 	@Inject
-	DeveloperService developerService;
+	PublisherService publisherService;
 
 	@GET
-	public List<Developer> getAllDevelopers() {
-		return developerService.listAll();
+	public List<Publisher> getAllPublishers() {
+		return publisherService.listAll();
 	}
 
 	@GET
 	@Path("/{id}")
-	public Developer getDeveloper(@PathParam("id") Long id) {
-		return developerService.findById(id);
+	public Publisher getPublisher(@PathParam("id") Long id) {
+		return publisherService.findById(id);
 	}
 
 	@POST
-	public Response addDeveloper(Developer developer) {
-		developerService.addDeveloper(developer);
+	public Response addPublisher(Publisher Publisher) {
+		publisherService.addPublisher(Publisher);
 		return Response.status(Response.Status.CREATED).build();
 	}
 
 	@PUT
 	@Path("/{id}")
-	public Response updateDeveloper(Developer developer) {
-		developerService.updateDeveloper(developer);
+	public Response updatePublisher(Publisher Publisher) {
+		publisherService.updatePublisher(Publisher);
 		return Response.ok().build();
 	}
 
 	@DELETE
 	@Path("/{id}")
-	public Response deleteDeveloper(@PathParam("id") Long id) {
-		developerService.deleteDeveloper(id);
+	public Response deletePublisher(@PathParam("id") Long id) {
+		publisherService.deletePublisher(id);
 		return Response.noContent().build();
 	}
 }

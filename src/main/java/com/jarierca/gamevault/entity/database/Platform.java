@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Platform extends PanacheEntityBase {
@@ -19,6 +20,8 @@ public class Platform extends PanacheEntityBase {
 	private String code;
 	private String description;
 	private Date releasedDate;
+	@ManyToOne
+	public Images images;
 
 	public Platform() {
 	}

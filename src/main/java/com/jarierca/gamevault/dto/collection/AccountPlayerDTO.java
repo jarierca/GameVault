@@ -1,4 +1,4 @@
-package com.jarierca.gamevault.entity.collection.dto;
+package com.jarierca.gamevault.dto.collection;
 
 import com.jarierca.gamevault.entity.collection.Player;
 

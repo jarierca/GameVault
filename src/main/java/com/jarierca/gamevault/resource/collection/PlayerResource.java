@@ -2,8 +2,8 @@ package com.jarierca.gamevault.resource.collection;
 
 import java.util.List;
 
+import com.jarierca.gamevault.dto.collection.AccountPlayerDTO;
 import com.jarierca.gamevault.entity.collection.Player;
-import com.jarierca.gamevault.entity.collection.dto.AccountPlayerDTO;
 import com.jarierca.gamevault.service.auth.AuthService;
 import com.jarierca.gamevault.service.auth.PasswordService;
 import com.jarierca.gamevault.service.collection.PlayerService;

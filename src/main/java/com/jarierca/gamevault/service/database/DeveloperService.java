@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.jarierca.gamevault.entity.database.Developer;
 import com.jarierca.gamevault.repository.database.DeveloperRepository;
+import com.jarierca.gamevault.repository.database.StatsRepository;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -12,30 +13,40 @@ import jakarta.transaction.Transactional;
 @ApplicationScoped
 public class DeveloperService {
 
-    @Inject
-    DeveloperRepository developerRepository;
+	@Inject
+	DeveloperRepository developerRepository;
 
-    public List<Developer> listAll() {
-        return developerRepository.listAll();
-    }
+	@Inject
+	StatsRepository statsRepository;
 
-    public Developer findById(Long id) {
-        return developerRepository.findById(id);
-    }
+	public List<Developer> listAll() {
+		return developerRepository.listAll();
+	}
 
-    @Transactional
-    public void addDeveloper(Developer developer) {
-        developerRepository.persist(developer);
-    }
+	public Developer findById(Long id) {
+		return developerRepository.findById(id);
+	}
 
-    @Transactional
-    public void updateDeveloper(Developer developer) {
-        developerRepository.persist(developer);
-    }
+	public long countDevelopers() {
+		return statsRepository.count(Developer.class);
+	}
 
-    @Transactional
-    public void deleteDeveloper(Long id) {
-        developerRepository.deleteById(id);
-    }
+	public List<Object[]> getTopDevelopers(int limit) {
+		return statsRepository.findTopEntities(Developer.class, "developer", limit);
+	}
+
+	@Transactional
+	public void addDeveloper(Developer developer) {
+		developerRepository.persist(developer);
+	}
+
+	@Transactional
+	public void updateDeveloper(Developer developer) {
+		developerRepository.persist(developer);
+	}
+
+	@Transactional
+	public void deleteDeveloper(Long id) {
+		developerRepository.deleteById(id);
+	}
 }
-

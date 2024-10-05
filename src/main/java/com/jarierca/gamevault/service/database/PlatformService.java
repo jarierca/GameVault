@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.jarierca.gamevault.entity.database.Platform;
 import com.jarierca.gamevault.repository.database.PlatformRepository;
+import com.jarierca.gamevault.repository.database.StatsRepository;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -12,29 +13,40 @@ import jakarta.transaction.Transactional;
 @ApplicationScoped
 public class PlatformService {
 
-    @Inject
-    PlatformRepository platformRepository;
+	@Inject
+	PlatformRepository platformRepository;
 
-    public List<Platform> listAll() {
-        return platformRepository.listAll();
-    }
+	@Inject
+	StatsRepository statsRepository;
 
-    public Platform findById(Long id) {
-        return platformRepository.findById(id);
-    }
+	public List<Platform> listAll() {
+		return platformRepository.listAll();
+	}
 
-    @Transactional
-    public void addPlatform(Platform platform) {
-        platformRepository.persist(platform);
-    }
+	public Platform findById(Long id) {
+		return platformRepository.findById(id);
+	}
 
-    @Transactional
-    public void updatePlatform(Platform platform) {
-        platformRepository.persist(platform);
-    }
+	public long countPlatforms() {
+		return statsRepository.count(Platform.class);
+	}
 
-    @Transactional
-    public void deletePlatform(Long id) {
-        platformRepository.deleteById(id);
-    }
+	public List<Object[]> getTopPlatforms(int limit) {
+		return statsRepository.findTopEntities(Platform.class, "platform", limit);
+	}
+
+	@Transactional
+	public void addPlatform(Platform platform) {
+		platformRepository.persist(platform);
+	}
+
+	@Transactional
+	public void updatePlatform(Platform platform) {
+		platformRepository.persist(platform);
+	}
+
+	@Transactional
+	public void deletePlatform(Long id) {
+		platformRepository.deleteById(id);
+	}
 }

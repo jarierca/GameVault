@@ -5,6 +5,7 @@ import java.util.List;
 import com.jarierca.gamevault.entity.database.Videogame;
 import com.jarierca.gamevault.service.database.VideogameService;
 
+import io.quarkus.panache.common.Page;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -33,38 +34,45 @@ public class VideogameResource {
 	}
 
 	@GET
-    @Path("/{id}")
-    public Response getVideogameById(@PathParam("id") Long id) {
-        Videogame videogame = videogameService.findById(id);
-        if (videogame != null) {
-            return Response.ok(videogame).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-    }
+	@Path("/{id}")
+	public Response getVideogameById(@PathParam("id") Long id) {
+		Videogame videogame = videogameService.findById(id);
+		if (videogame != null) {
+			return Response.ok(videogame).build();
+		} else {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
 
 	@GET
 	@Path("/platform/{platformId}")
 	public List<Videogame> getVideogamesByPlatform(@PathParam("platformId") Long platformId) {
 		return videogameService.findByPlatformId(platformId);
 	}
-	
+
 	@GET
 	@Path("/genre/{genreId}")
 	public List<Videogame> getVideogamesByGenre(@PathParam("genreId") Long genreId) {
 		return videogameService.findByGenreId(genreId);
 	}
-	
+
+	@GET
+	@Path("/games/random")
+	public Response getRandomGames(@QueryParam("limit") int limit) {
+		List<Videogame> randomGames = Videogame.find("ORDER BY RANDOM()").page(Page.ofSize(limit)).list();
+		return Response.ok(randomGames).build();
+	}
+
 	@GET
 	@Path("/search")
 	public Response searchVideogamesByTitle(@QueryParam("title") String title) {
-	    List<Videogame> results = videogameService.searchByTitle(title);
-	    if (results.isEmpty()) {
-	        return Response.status(Response.Status.NOT_FOUND).build();
+		List<Videogame> results = videogameService.searchByTitle(title);
+		if (results.isEmpty()) {
+			return Response.status(Response.Status.NOT_FOUND).build();
 //	        return Response.ok("No results found").build();
-	    } else {
-	        return Response.ok(results).build();
-	    }
+		} else {
+			return Response.ok(results).build();
+		}
 	}
 
 	@RolesAllowed("admin")

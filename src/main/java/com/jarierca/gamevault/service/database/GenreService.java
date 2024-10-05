@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.jarierca.gamevault.entity.database.Genre;
 import com.jarierca.gamevault.repository.database.GenreRepository;
+import com.jarierca.gamevault.repository.database.StatsRepository;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -12,29 +13,40 @@ import jakarta.transaction.Transactional;
 @ApplicationScoped
 public class GenreService {
 
-    @Inject
-    GenreRepository genreRepository;
+	@Inject
+	GenreRepository genreRepository;
 
-    public List<Genre> listAll() {
-        return genreRepository.listAll();
-    }
+	@Inject
+	StatsRepository statsRepository;
 
-    public Genre findById(Long id) {
-        return genreRepository.findById(id);
-    }
+	public List<Genre> listAll() {
+		return genreRepository.listAll();
+	}
 
-    @Transactional
-    public void addGenre(Genre genre) {
-        genreRepository.persist(genre);
-    }
+	public Genre findById(Long id) {
+		return genreRepository.findById(id);
+	}
 
-    @Transactional
-    public void updateGenre(Genre genre) {
-        genreRepository.persist(genre);
-    }
+	public long countGenres() {
+		return statsRepository.count(Genre.class);
+	}
 
-    @Transactional
-    public void deleteGenre(Long id) {
-        genreRepository.deleteById(id);
-    }
+	public List<Object[]> getTopGenres(int limit) {
+		return statsRepository.findTopEntities(Genre.class, "genre", limit);
+	}
+
+	@Transactional
+	public void addGenre(Genre genre) {
+		genreRepository.persist(genre);
+	}
+
+	@Transactional
+	public void updateGenre(Genre genre) {
+		genreRepository.persist(genre);
+	}
+
+	@Transactional
+	public void deleteGenre(Long id) {
+		genreRepository.deleteById(id);
+	}
 }

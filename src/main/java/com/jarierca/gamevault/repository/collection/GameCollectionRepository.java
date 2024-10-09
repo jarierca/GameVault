@@ -11,7 +11,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class GameCollectionRepository implements PanacheRepository<GameCollection> {
 
 	public List<GameCollection> findAllCollectionsByPlayerId(Long playerId) {
-		return find("player.id", playerId).list();
+		return find("player.id = ?1 ORDER BY createdDate", playerId).list();
 	}
 
 	public GameCollection findByPlayerIdAndCollectionId(Long playerId, Long collectionId) {

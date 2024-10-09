@@ -47,8 +47,16 @@ public class VideogameRepository implements PanacheRepository<Videogame> {
 		return list("platform.id", platformId);
 	}
 
+	public List<Videogame> findByPublisherId(Long publisherId) {
+		return list("publisher.id", publisherId);
+	}
+	
 	public List<Videogame> findByGenreId(Long genreId) {
 		return list("genre.id", genreId);
+	}
+	
+	public List<Videogame> findByDeveloperId(Long developerId) {
+		return list("developer.id", developerId);
 	}
 
 	public List<Videogame> findByTitle(String title) {

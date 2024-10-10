@@ -1,13 +1,16 @@
 package com.jarierca.gamevault.entity.database;
 
 import java.util.Date;
+import java.util.List;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Videogame extends PanacheEntityBase {
@@ -32,15 +35,15 @@ public class Videogame extends PanacheEntityBase {
 	private Developer developer;
 	@ManyToOne
 	private Publisher publisher;
-	@ManyToOne
-	private Images images;
+	@OneToMany(mappedBy = "videogame", cascade = CascadeType.ALL)
+	private List<Images> images;
 
 	public Videogame() {
 	}
 
 	public Videogame(Long id, String title, Platform platform, Date releaseDate, String gameType, Integer maxPlayers,
 			String overview, String alternativeNames, String urlAlt, String video, Genre genre, Developer developer,
-			Publisher publisher, Images images) {
+			Publisher publisher) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -55,7 +58,6 @@ public class Videogame extends PanacheEntityBase {
 		this.genre = genre;
 		this.developer = developer;
 		this.publisher = publisher;
-		this.images = images;
 	}
 
 	public Long getId() {
@@ -161,13 +163,4 @@ public class Videogame extends PanacheEntityBase {
 	public void setPublisher(Publisher publisher) {
 		this.publisher = publisher;
 	}
-
-	public Images getImages() {
-		return images;
-	}
-
-	public void setImages(Images images) {
-		this.images = images;
-	}
-
 }

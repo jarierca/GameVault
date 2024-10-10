@@ -1,11 +1,14 @@
 package com.jarierca.gamevault.entity.database;
 
+import java.util.List;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Genre extends PanacheEntityBase {
@@ -15,8 +18,8 @@ public class Genre extends PanacheEntityBase {
 	private Long id;
 
 	private String name;
-	@ManyToOne
-	public Images images;
+	@OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
+    private List<Images> images;
 
 	public Genre() {
 	}

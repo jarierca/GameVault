@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Images extends PanacheEntityBase {
@@ -17,6 +19,26 @@ public class Images extends PanacheEntityBase {
 	private String altName;
 	private String url;
 	private Double size;
+
+	@ManyToOne
+	@JoinColumn(name = "videogame_id")
+	private Videogame videogame;
+
+	@ManyToOne
+	@JoinColumn(name = "platform_id")
+	private Platform platform;
+
+	@ManyToOne
+	@JoinColumn(name = "developer_id")
+	private Developer developer;
+
+	@ManyToOne
+	@JoinColumn(name = "genre_id")
+	private Genre genre;
+
+	@ManyToOne
+	@JoinColumn(name = "publisher_id")
+	private Publisher publisher;
 
 	public Images() {
 	}
@@ -68,6 +90,46 @@ public class Images extends PanacheEntityBase {
 
 	public void setSize(Double size) {
 		this.size = size;
+	}
+
+	public Videogame getVideogame() {
+		return videogame;
+	}
+
+	public void setVideogame(Videogame videogame) {
+		this.videogame = videogame;
+	}
+
+	public Platform getPlatform() {
+		return platform;
+	}
+
+	public void setPlatform(Platform platform) {
+		this.platform = platform;
+	}
+
+	public Developer getDeveloper() {
+		return developer;
+	}
+
+	public void setDeveloper(Developer developer) {
+		this.developer = developer;
+	}
+
+	public Genre getGenre() {
+		return genre;
+	}
+
+	public void setGenre(Genre genre) {
+		this.genre = genre;
+	}
+
+	public Publisher getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
 	}
 
 }

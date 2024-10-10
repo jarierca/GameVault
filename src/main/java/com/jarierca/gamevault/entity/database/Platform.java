@@ -1,13 +1,15 @@
 package com.jarierca.gamevault.entity.database;
 
 import java.util.Date;
+import java.util.List;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Platform extends PanacheEntityBase {
@@ -20,8 +22,8 @@ public class Platform extends PanacheEntityBase {
 	private String code;
 	private String description;
 	private Date releasedDate;
-	@ManyToOne
-	public Images images;
+	@OneToMany(mappedBy = "platform", cascade = CascadeType.ALL)
+	private List<Images> images;
 
 	public Platform() {
 	}

@@ -62,39 +62,31 @@ public class PlayerResource {
 	public Response updatePlayer(AccountPlayerDTO playerDTO) {
 		Player player = playerDTO.getPlayer();
 		Long playerId = authService.getAuthenticatedUserId();
-		if (player.getId().equals(playerId)) {
+		Player existingPlayer = playerService.findById(playerId);
 
-			Player existingPlayer = playerService.findById(playerId);
-
-			if (!passwordService.checkPassword(playerDTO.getCurrentPassword(), existingPlayer.getPassword())) {
-				return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid current password").build();
-			}
-
-			player.copyProperties(existingPlayer, player);
-			playerService.updatePlayer(existingPlayer);
-
-			return Response.ok().build();
+		if (!passwordService.checkPassword(playerDTO.getCurrentPassword(), existingPlayer.getPassword())) {
+			return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid current password").build();
 		}
-		return Response.status(Response.Status.NOT_FOUND).build();
+
+		player.copyProperties(existingPlayer, player);
+		playerService.updatePlayer(existingPlayer);
+
+		return Response.ok().build();
 	}
 
 	@DELETE
 	@Path("/{id}")
 	public Response deletePlayer(AccountPlayerDTO playerDTO) {
 		Long playerId = authService.getAuthenticatedUserId();
+		Player existingPlayer = playerService.findById(playerId);
 
-		if (playerDTO.getPlayer().getId().equals(playerId)) {
-			Player existingPlayer = playerService.findById(playerId);
-
-			if (!passwordService.checkPassword(playerDTO.getCurrentPassword(), existingPlayer.getPassword())) {
-				return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid current password").build();
-			}
-
-			playerService.deletePlayer(playerId);
-
-			return Response.noContent().build();
+		if (!passwordService.checkPassword(playerDTO.getCurrentPassword(), existingPlayer.getPassword())) {
+			return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid current password").build();
 		}
-		return Response.status(Response.Status.NOT_FOUND).build();
+
+		playerService.deletePlayer(playerId);
+
+		return Response.noContent().build();
 	}
 
 	@GET

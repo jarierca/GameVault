@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jarierca.gamevault.dto.collection.AccountPlayerDTO;
+import com.jarierca.gamevault.dto.collection.AuthTokens;
 import com.jarierca.gamevault.entity.collection.Player;
 import com.jarierca.gamevault.repository.collection.PlayerRepository;
 import com.jarierca.gamevault.service.auth.AuthService;
@@ -35,7 +35,7 @@ public class AuthResource {
 
 	@Inject
 	OTPService otpService;
-	
+
 	@Inject
 	PlayerService playerService;
 
@@ -121,7 +121,7 @@ public class AuthResource {
 
 		return Response.ok(generateTokenResponse(player).getEntity()).build();
 	}
-	
+
 	@PUT
 	@Path("/disabled-otp")
 	public Response disabledOTP(OtpVerificationRequest request) {
@@ -147,15 +147,15 @@ public class AuthResource {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error validating OTP").build();
 		}
 	}
-	
 
 	private Response generateTokenResponse(Player player) {
-		String token = authService.generateToken(player.getUsername(), player.getId(), player.getRole());
+		AuthTokens authTokens = authService.generateTokens(player.getUsername(), player.getId(), player.getRole());
 
 		LOG.info("JWT Token generated for user: {}", player.getUsername());
-		LOG.info("Generated JWT Token: {}", token);
+		LOG.info("Generated JWT Access Token: {}", authTokens.getAccessToken());
+		LOG.info("Generated JWT Refresh Token: {}", authTokens.getRefreshToken());
 
-		return Response.ok(new TokenResponse(token)).build();
+		return Response.ok(new TokenResponse(authTokens.getAccessToken(), authTokens.getRefreshToken())).build();
 	}
 
 	@POST
@@ -177,15 +177,48 @@ public class AuthResource {
 		return Response.status(Response.Status.CREATED).entity(playerCredentials.getId()).build();
 	}
 
+	@POST
+	@Path("/refresh")
+	public Response refreshToken(RefreshTokenRequest request) {
+		String refreshToken = request.getRefreshToken();
+
+		Player player = playerRepository.findById(authService.getAuthenticatedUserId());
+		if (player == null) {
+			return Response.status(Response.Status.NOT_FOUND).entity("Player not found").build();
+		}
+
+		String newAccessToken = authService.generateToken(player.getUsername(), player.getId(), player.getRole());
+
+		return Response.ok(new TokenResponse(newAccessToken, refreshToken)).build();
+	}
+
 	public static class TokenResponse {
 		private String token;
+		private String refreshToken;
 
-		public TokenResponse(String token) {
+		public TokenResponse(String token, String refreshToken) {
 			this.token = token;
+			this.refreshToken = refreshToken;
 		}
 
 		public String getToken() {
 			return token;
+		}
+
+		public String getRefreshToken() {
+			return refreshToken;
+		}
+	}
+
+	public static class RefreshTokenRequest {
+		private String refreshToken;
+
+		public RefreshTokenRequest(String refreshToken) {
+			this.refreshToken = refreshToken;
+		}
+
+		public String getRefreshToken() {
+			return refreshToken;
 		}
 	}
 

@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
+import com.jarierca.gamevault.dto.collection.AuthTokens;
+
 import io.smallrye.jwt.auth.principal.JWTParser;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtException;
@@ -41,6 +43,15 @@ public class AuthService {
 
 		return Jwt.issuer("dev-gamevault").upn(username).groups(roles).subject(String.valueOf(playerId))
 				.claim("playerId", playerId).expiresIn(Duration.ofHours(1)).sign();
+	}
+
+	public AuthTokens generateTokens(String username, Long playerId, String role) {
+		String accessToken = Jwt.issuer("dev-gamevault").upn(username).groups(Set.of(role))
+				.subject(String.valueOf(playerId)).claim("playerId", playerId).expiresIn(Duration.ofHours(1)).sign();
+
+		String refreshToken = Jwt.issuer("dev-gamevault").upn(username).expiresIn(Duration.ofDays(30)).sign();
+
+		return new AuthTokens(accessToken, refreshToken);
 	}
 
 	// Validate a token

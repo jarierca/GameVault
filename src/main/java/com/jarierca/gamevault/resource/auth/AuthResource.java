@@ -5,15 +5,18 @@ import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jarierca.gamevault.dto.collection.AccountPlayerDTO;
 import com.jarierca.gamevault.entity.collection.Player;
 import com.jarierca.gamevault.repository.collection.PlayerRepository;
 import com.jarierca.gamevault.service.auth.AuthService;
 import com.jarierca.gamevault.service.auth.OTPService;
 import com.jarierca.gamevault.service.auth.PasswordService;
+import com.jarierca.gamevault.service.collection.PlayerService;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
@@ -32,6 +35,9 @@ public class AuthResource {
 
 	@Inject
 	OTPService otpService;
+	
+	@Inject
+	PlayerService playerService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AuthResource.class);
 
@@ -115,6 +121,33 @@ public class AuthResource {
 
 		return Response.ok(generateTokenResponse(player).getEntity()).build();
 	}
+	
+	@PUT
+	@Path("/disabled-otp")
+	public Response disabledOTP(OtpVerificationRequest request) {
+		Long playerId = authService.getAuthenticatedUserId();
+		Player existingPlayer = playerService.findById(playerId);
+
+		if (!passwordService.checkPassword(request.getPassword(), existingPlayer.getPassword())) {
+			return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid current password").build();
+		}
+
+		try {
+			boolean isValidOtp = otpService.verifyOTP(existingPlayer.getOtpSecret(), request.getOtp());
+			if (isValidOtp) {
+				existingPlayer.setOtpEnabled(false);
+				existingPlayer.setOtpSecret("");
+				playerService.updatePlayer(existingPlayer);
+				return Response.ok().build();
+			} else {
+				return Response.status(Response.Status.UNAUTHORIZED).entity("Error validating OTP").build();
+			}
+
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error validating OTP").build();
+		}
+	}
+	
 
 	private Response generateTokenResponse(Player player) {
 		String token = authService.generateToken(player.getUsername(), player.getId(), player.getRole());

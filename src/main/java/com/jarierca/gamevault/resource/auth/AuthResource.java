@@ -6,6 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jarierca.gamevault.dto.collection.AuthTokens;
+import com.jarierca.gamevault.dto.communication.LoginRequest;
+import com.jarierca.gamevault.dto.communication.LoginResponse;
+import com.jarierca.gamevault.dto.communication.OtpVerificationRequest;
+import com.jarierca.gamevault.dto.communication.TokenRequest;
+import com.jarierca.gamevault.dto.communication.TokenResponse;
 import com.jarierca.gamevault.entity.collection.Player;
 import com.jarierca.gamevault.repository.collection.PlayerRepository;
 import com.jarierca.gamevault.service.auth.AuthService;
@@ -19,6 +24,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/auth")
@@ -46,22 +52,16 @@ public class AuthResource {
 
 	@POST
 	@Path("/login")
-	@Consumes("application/json")
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response login(LoginRequest request) {
 		Player player = playerRepository.findByUsername(request.getUsername());
 		if (player == null) {
 			return Response.status(Response.Status.NOT_FOUND).entity("Player not found").build();
 		}
 
-		if (player.getFailedLoginAttempts() != null && player.getFailedLoginAttempts() >= MAX_ATTEMPTS) {
-			LocalDateTime lastAttempt = player.getLastLoginAttempt();
-			LocalDateTime blockEndTime = lastAttempt.plusMinutes(BLOCK_TIME);
-			if (LocalDateTime.now().isBefore(blockEndTime)) {
-				return Response.status(Response.Status.FORBIDDEN)
-						.entity("Account is temporarily locked. Try again after " + BLOCK_TIME + " minutes.").build();
-			} else {
-				player.setFailedLoginAttempts(0);
-			}
+		if (isAccountBlocked(player)) {
+			return Response.status(Response.Status.FORBIDDEN)
+					.entity("Account is temporarily locked. Try again after " + BLOCK_TIME + " minutes.").build();
 		}
 
 		if (!passwordService.checkPassword(request.getPassword(), player.getPassword())) {
@@ -83,24 +83,58 @@ public class AuthResource {
 	}
 
 	@POST
+	@Path("/register")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response register(Player playerCredentials) {
+		if (playerRepository.findByUsername(playerCredentials.getUsername()) != null) {
+			return Response.status(Response.Status.CONFLICT).entity("Username already exists").build();
+		}
+
+		String hashedPassword = passwordService.hashPassword(playerCredentials.getPassword());
+		playerCredentials.setPassword(hashedPassword);
+
+		playerRepository.save(playerCredentials);
+
+		LOG.info("New player registered with username: {}", playerCredentials.getUsername());
+
+		return Response.status(Response.Status.CREATED).entity(playerCredentials.getId()).build();
+	}
+
+	@POST
+	@Path("/refresh")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response refreshToken(TokenRequest request) {
+		String refreshToken = request.getToken();
+
+		if (!authService.isValidRefreshToken(refreshToken)) {
+			return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid refresh token").build();
+		}
+
+		Player player = playerRepository.findById(authService.getAuthenticatedUserId());
+		if (player == null) {
+			return Response.status(Response.Status.NOT_FOUND).entity("Player not found").build();
+		}
+
+		String newAccessToken = authService.generateToken(player.getUsername(), player.getId(), player.getRole());
+
+		return Response.ok(new TokenResponse(newAccessToken, refreshToken)).build();
+	}
+
+	@POST
 	@Path("/login-otp")
-	@Consumes("application/json")
-	@Produces("application/json")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response verifyOtp(OtpVerificationRequest request) {
 		Player player = playerRepository.findByUsername(request.getUsername());
 		if (player == null) {
 			return Response.status(Response.Status.NOT_FOUND).entity("Player not found").build();
 		}
 
-		if (player.getFailedLoginAttempts() != null && player.getFailedLoginAttempts() >= MAX_ATTEMPTS) {
-			LocalDateTime lastAttempt = player.getLastLoginAttempt();
-			LocalDateTime blockEndTime = lastAttempt.plusMinutes(BLOCK_TIME);
-			if (LocalDateTime.now().isBefore(blockEndTime)) {
-				return Response.status(Response.Status.FORBIDDEN)
-						.entity("Account is temporarily locked. Try again after " + BLOCK_TIME + " minutes.").build();
-			} else {
-				player.setFailedLoginAttempts(0);
-			}
+		if (isAccountBlocked(player)) {
+			return Response.status(Response.Status.FORBIDDEN)
+					.entity("Account is temporarily locked. Try again after " + BLOCK_TIME + " minutes.").build();
 		}
 
 		try {
@@ -158,162 +192,16 @@ public class AuthResource {
 		return Response.ok(new TokenResponse(authTokens.getAccessToken(), authTokens.getRefreshToken())).build();
 	}
 
-	@POST
-	@Path("/register")
-	@Consumes("application/json")
-	@Produces("application/json")
-	public Response register(Player playerCredentials) {
-		if (playerRepository.findByUsername(playerCredentials.getUsername()) != null) {
-			return Response.status(Response.Status.CONFLICT).entity("Username already exists").build();
+	private boolean isAccountBlocked(Player player) {
+		if (player.getFailedLoginAttempts() != null && player.getFailedLoginAttempts() >= MAX_ATTEMPTS) {
+			LocalDateTime lastAttempt = player.getLastLoginAttempt();
+			LocalDateTime blockEndTime = lastAttempt.plusMinutes(BLOCK_TIME);
+			if (LocalDateTime.now().isBefore(blockEndTime)) {
+				return true;
+			} else {
+				player.setFailedLoginAttempts(0);
+			}
 		}
-
-		String hashedPassword = passwordService.hashPassword(playerCredentials.getPassword());
-		playerCredentials.setPassword(hashedPassword);
-
-		playerRepository.save(playerCredentials);
-
-		LOG.info("New player registered with username: {}", playerCredentials.getUsername());
-
-		return Response.status(Response.Status.CREATED).entity(playerCredentials.getId()).build();
-	}
-
-	@POST
-	@Path("/refresh")
-	public Response refreshToken(RefreshTokenRequest request) {
-		String refreshToken = request.getRefreshToken();
-
-		Player player = playerRepository.findById(authService.getAuthenticatedUserId());
-		if (player == null) {
-			return Response.status(Response.Status.NOT_FOUND).entity("Player not found").build();
-		}
-
-		String newAccessToken = authService.generateToken(player.getUsername(), player.getId(), player.getRole());
-
-		return Response.ok(new TokenResponse(newAccessToken, refreshToken)).build();
-	}
-
-	public static class TokenResponse {
-		private String token;
-		private String refreshToken;
-
-		public TokenResponse(String token, String refreshToken) {
-			this.token = token;
-			this.refreshToken = refreshToken;
-		}
-
-		public String getToken() {
-			return token;
-		}
-
-		public String getRefreshToken() {
-			return refreshToken;
-		}
-	}
-
-	public static class RefreshTokenRequest {
-		private String refreshToken;
-
-		public RefreshTokenRequest(String refreshToken) {
-			this.refreshToken = refreshToken;
-		}
-
-		public String getRefreshToken() {
-			return refreshToken;
-		}
-	}
-
-	public static class LoginRequest {
-		private String message;
-		private Long playerId;
-
-		private String username;
-		private String password;
-
-		public LoginRequest(String message, Long playerId) {
-			this.message = message;
-			this.playerId = playerId;
-		}
-
-		public String getMessage() {
-			return message;
-		}
-
-		public Long getPlayerId() {
-			return playerId;
-		}
-
-		public String getUsername() {
-			return username;
-		}
-
-		public void setUsername(String username) {
-			this.username = username;
-		}
-
-		public String getPassword() {
-			return password;
-		}
-
-		public void setPassword(String password) {
-			this.password = password;
-		}
-	}
-
-	public static class LoginResponse {
-		private String message;
-		private Long playerId;
-
-		public LoginResponse(String message, Long playerId) {
-			this.message = message;
-			this.playerId = playerId;
-		}
-
-		public String getMessage() {
-			return message;
-		}
-
-		public Long getPlayerId() {
-			return playerId;
-		}
-	}
-
-	public static class OtpVerificationRequest {
-		private Long playerId;
-		private String username;
-		private String password;
-		private String otp;
-
-		public Long getPlayerId() {
-			return playerId;
-		}
-
-		public void setPlayerId(Long playerId) {
-			this.playerId = playerId;
-		}
-
-		public String getUsername() {
-			return username;
-		}
-
-		public void setUsername(String username) {
-			this.username = username;
-		}
-
-		public String getPassword() {
-			return password;
-		}
-
-		public void setPassword(String password) {
-			this.password = password;
-		}
-
-		public String getOtp() {
-			return otp;
-		}
-
-		public void setOtp(String otp) {
-			this.otp = otp;
-		}
-
+		return false;
 	}
 }

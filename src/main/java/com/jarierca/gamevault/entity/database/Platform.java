@@ -3,6 +3,8 @@ package com.jarierca.gamevault.entity.database;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -23,6 +25,7 @@ public class Platform extends PanacheEntityBase {
 	private String description;
 	private Date releasedDate;
 	@OneToMany(mappedBy = "platform", cascade = CascadeType.ALL)
+	@JsonManagedReference
 	private List<Images> images;
 
 	public Platform() {

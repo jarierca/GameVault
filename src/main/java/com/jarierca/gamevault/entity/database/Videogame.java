@@ -3,6 +3,8 @@ package com.jarierca.gamevault.entity.database;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -36,6 +38,7 @@ public class Videogame extends PanacheEntityBase {
 	@ManyToOne
 	private Publisher publisher;
 	@OneToMany(mappedBy = "videogame", cascade = CascadeType.ALL)
+	@JsonManagedReference
 	private List<Images> images;
 
 	public Videogame() {

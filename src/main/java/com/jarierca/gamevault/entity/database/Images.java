@@ -1,12 +1,17 @@
 package com.jarierca.gamevault.entity.database;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 
 @Entity
 public class Images extends PanacheEntityBase {
@@ -19,27 +24,38 @@ public class Images extends PanacheEntityBase {
 	private String altName;
 	private String url;
 	private Double size;
+	@Enumerated(EnumType.STRING)
+	private ImageType imageType; // "COVER", "BANNER", "NORMAL"
 
 	@ManyToOne
 	@JoinColumn(name = "videogame_id")
+	@JsonBackReference
 	private Videogame videogame;
 
 	@ManyToOne
 	@JoinColumn(name = "platform_id")
+	@JsonBackReference
 	private Platform platform;
 
 	@ManyToOne
 	@JoinColumn(name = "developer_id")
+	@JsonBackReference
 	private Developer developer;
 
 	@ManyToOne
-	@JoinColumn(name = "genre_id")
-	private Genre genre;
-
-	@ManyToOne
 	@JoinColumn(name = "publisher_id")
+	@JsonBackReference
 	private Publisher publisher;
 
+	@ManyToOne
+	@JoinColumn(name = "genre_id")
+	@JsonBackReference
+	private Genre genre;
+
+	public enum ImageType {
+		COVER, BANNER, NORMAL
+	}
+	
 	public Images() {
 	}
 
@@ -130,6 +146,14 @@ public class Images extends PanacheEntityBase {
 
 	public void setPublisher(Publisher publisher) {
 		this.publisher = publisher;
+	}
+
+	public ImageType getImageType() {
+		return imageType;
+	}
+
+	public void setImageType(ImageType imageType) {
+		this.imageType = imageType;
 	}
 
 }

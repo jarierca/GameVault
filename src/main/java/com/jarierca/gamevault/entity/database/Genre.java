@@ -2,6 +2,8 @@ package com.jarierca.gamevault.entity.database;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -19,6 +21,7 @@ public class Genre extends PanacheEntityBase {
 
 	private String name;
 	@OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
+	@JsonManagedReference
     private List<Images> images;
 
 	public Genre() {

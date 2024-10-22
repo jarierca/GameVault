@@ -2,15 +2,22 @@ package com.jarierca.gamevault.entity.database;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
@@ -27,26 +34,29 @@ public class Videogame extends PanacheEntityBase {
 	private Date releaseDate;
 	private String gameType;
 	private Integer maxPlayers;
+	@Column(length = 5000)
 	private String overview;
 	private String alternativeNames;
 	private String urlAlt;
 	private String video;
-	@ManyToOne
-	private Genre genre;
+	@ManyToMany
+	@JoinTable(name = "videogame_genre", joinColumns = @JoinColumn(name = "videogame_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
+	@JsonManagedReference
+	public Set<Genre> genres;
 	@ManyToOne
 	private Developer developer;
 	@ManyToOne
 	private Publisher publisher;
 	@OneToMany(mappedBy = "videogame", cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<Images> images;
+	private List<Image> images;
 
 	public Videogame() {
 	}
 
 	public Videogame(Long id, String title, Platform platform, Date releaseDate, String gameType, Integer maxPlayers,
-			String overview, String alternativeNames, String urlAlt, String video, Genre genre, Developer developer,
-			Publisher publisher) {
+			String overview, String alternativeNames, String urlAlt, String video, Set<Genre> genres,
+			Developer developer, Publisher publisher) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -58,7 +68,7 @@ public class Videogame extends PanacheEntityBase {
 		this.alternativeNames = alternativeNames;
 		this.urlAlt = urlAlt;
 		this.video = video;
-		this.genre = genre;
+		this.genres = genres;
 		this.developer = developer;
 		this.publisher = publisher;
 	}
@@ -143,12 +153,12 @@ public class Videogame extends PanacheEntityBase {
 		this.video = video;
 	}
 
-	public Genre getGenre() {
-		return genre;
+	public Set<Genre> getGenres() {
+		return genres;
 	}
 
-	public void setGenre(Genre genre) {
-		this.genre = genre;
+	public void setGenre(Set<Genre> genres) {
+		this.genres = genres;
 	}
 
 	public Developer getDeveloper() {

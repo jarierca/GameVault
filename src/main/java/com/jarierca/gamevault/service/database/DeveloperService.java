@@ -23,6 +23,14 @@ public class DeveloperService {
 		return developerRepository.listAll();
 	}
 
+	public List<Developer> findAll(int page, int size) {
+		return developerRepository.findAll(page, size);
+	}
+
+	public long count() {
+		return developerRepository.count();
+	}
+
 	public Developer findById(Long id) {
 		return developerRepository.findById(id);
 	}

@@ -2,6 +2,7 @@ package com.jarierca.gamevault.service.database;
 
 import java.util.List;
 
+import com.jarierca.gamevault.dto.database.GenreDTO;
 import com.jarierca.gamevault.entity.database.Genre;
 import com.jarierca.gamevault.repository.database.GenreRepository;
 import com.jarierca.gamevault.repository.database.StatsRepository;
@@ -23,6 +24,14 @@ public class GenreService {
 		return genreRepository.listAll();
 	}
 
+	public List<GenreDTO> findAll(int page, int size) {
+		return genreRepository.findAll(page, size);
+	}
+
+	public long count() {
+		return genreRepository.count();
+	}
+
 	public Genre findById(Long id) {
 		return genreRepository.findById(id);
 	}
@@ -32,7 +41,7 @@ public class GenreService {
 	}
 
 	public List<Object[]> getTopGenres(int limit) {
-		return statsRepository.findTopEntities(Genre.class, "genre", limit);
+		return statsRepository.findTopVideogamesGenre(limit);
 	}
 
 	@Transactional

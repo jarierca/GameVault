@@ -3,6 +3,7 @@ package com.jarierca.gamevault.resource.collection;
 import java.util.List;
 import java.util.Map;
 
+import com.jarierca.gamevault.dto.collection.VideogameCollectionDTO;
 import com.jarierca.gamevault.entity.collection.CollectionVideogame;
 import com.jarierca.gamevault.service.collection.CollectionVideogameService;
 
@@ -57,7 +58,8 @@ public class CollectionVideogameResource {
 	@GET
 	@Path("{collectionId}/videogames")
 	public Response getCollectionVideogameByCollectionId(@PathParam("collectionId") Long collectionId) {
-		List<CollectionVideogame> games = collectionVideogameService.getCollectionVideogameByCollectionId(collectionId);
+		List<VideogameCollectionDTO> games = collectionVideogameService
+				.getCollectionVideogameByCollectionId(collectionId);
 
 		return Response.ok(games).build();
 	}

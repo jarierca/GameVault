@@ -2,6 +2,7 @@ package com.jarierca.gamevault.resource.database;
 
 import java.util.List;
 
+import com.jarierca.gamevault.dto.communication.PageResponse;
 import com.jarierca.gamevault.entity.database.Developer;
 import com.jarierca.gamevault.service.database.DeveloperService;
 
@@ -14,6 +15,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -26,8 +28,12 @@ public class DeveloperResource {
 	DeveloperService developerService;
 
 	@GET
-	public List<Developer> getAllDevelopers() {
-		return developerService.listAll();
+	public PageResponse<Developer> getAllDevelopers(@QueryParam("page") int page, @QueryParam("size") int size) {
+		List<Developer> developers = developerService.findAll(page, size);
+		long totalElements = developerService.count();
+		int totalPages = (int) Math.ceil((double) totalElements / size);
+
+		return new PageResponse<>(developers, totalPages, totalElements);
 	}
 
 	@GET

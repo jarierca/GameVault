@@ -26,4 +26,15 @@ public class StatsRepository {
 		return em.createQuery(query, Object[].class).setMaxResults(limit).getResultList();
 	}
 
+	public List<Object[]> findTopVideogamesGenre(int limit) {
+		String query = "SELECT g.id, g.name, COUNT(v) " 
+				+ "FROM Genre g "
+				+ "JOIN VideogameGenre vg ON vg.genre.id = g.id  " 
+				+ "JOIN Videogame v ON v.id = vg.videogame.id "
+				+ "GROUP BY g.id , g.name " 
+				+ "ORDER BY COUNT(v) DESC ";
+
+		return em.createQuery(query, Object[].class).setMaxResults(limit).getResultList();
+	}
+
 }

@@ -14,7 +14,7 @@ import jakarta.persistence.ManyToOne;
 
 
 @Entity
-public class Images extends PanacheEntityBase {
+public class Image extends PanacheEntityBase {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,10 +56,10 @@ public class Images extends PanacheEntityBase {
 		COVER, BANNER, NORMAL
 	}
 	
-	public Images() {
+	public Image() {
 	}
 
-	public Images(Long id, String name, String altName, String url, Double size) {
+	public Image(Long id, String name, String altName, String url, Double size) {
 		super();
 		this.id = id;
 		this.name = name;

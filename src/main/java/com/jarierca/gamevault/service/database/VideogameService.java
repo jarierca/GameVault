@@ -16,9 +16,9 @@ public class VideogameService {
 
 	@Inject
 	VideogameRepository videogameRepository;
-	
+
 	@Inject
-    StatsRepository statsRepository;
+	StatsRepository statsRepository;
 
 	public List<Videogame> listAll() {
 		return videogameRepository.listAll();
@@ -29,30 +29,30 @@ public class VideogameService {
 	}
 
 	public long countVideogames() {
-        return statsRepository.count(Videogame.class);
-    }
+		return statsRepository.count(Videogame.class);
+	}
 
 	public List<VideogameDTO> getRandomGames(int limit) {
 		return videogameRepository.findRandomGames(limit);
 	}
 
-	public List<Videogame> findByPlatformId(Long platformId) {
-		return videogameRepository.findByPlatformId(platformId);
-	}
-	
-	public List<Videogame> findByDeveloperId(Long developerId) {
-		return videogameRepository.findByDeveloperId(developerId);
-	}
-	
-	public List<Videogame> findByPublisherId(Long publisherId) {
-		return videogameRepository.findByPublisherId(publisherId);
+	public List<VideogameDTO> findByField(String field, Long id, int page, int size) {
+		return videogameRepository.findByField(field, id, page, size);
 	}
 
-	public List<Videogame> findByGenreId(Long genreId) {
-		return videogameRepository.findByGenreId(genreId);
+	public long countByField(String field, Long platformId) {
+		return videogameRepository.countByField(field, platformId);
 	}
 
-	public List<Videogame> searchByTitle(String title) {
+	public List<VideogameDTO> findByGenreId(Long id, int page, int size) {
+		return videogameRepository.findByGenreId(id, page, size);
+	}
+	
+	public long countByGenre(Long platformId) {
+		return videogameRepository.countByGenre(platformId);
+	}
+
+	public List<VideogameDTO> searchByTitle(String title) {
 		return videogameRepository.findByTitle(title);
 	}
 

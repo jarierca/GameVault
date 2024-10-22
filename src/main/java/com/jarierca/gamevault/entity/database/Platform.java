@@ -26,7 +26,7 @@ public class Platform extends PanacheEntityBase {
 	private Date releasedDate;
 	@OneToMany(mappedBy = "platform", cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<Images> images;
+	private List<Image> images;
 
 	public Platform() {
 	}

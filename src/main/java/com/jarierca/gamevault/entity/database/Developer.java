@@ -25,7 +25,7 @@ public class Developer extends PanacheEntityBase {
 	private Date date;
 	@OneToMany(mappedBy = "developer", cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<Images> images;
+	private List<Image> images;
 
 	public Developer() {
 	}

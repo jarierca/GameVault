@@ -3,6 +3,7 @@ package com.jarierca.gamevault.service.database;
 import java.util.List;
 
 import com.jarierca.gamevault.entity.database.Platform;
+import com.jarierca.gamevault.entity.database.Publisher;
 import com.jarierca.gamevault.repository.database.PlatformRepository;
 import com.jarierca.gamevault.repository.database.StatsRepository;
 
@@ -21,6 +22,14 @@ public class PlatformService {
 
 	public List<Platform> listAll() {
 		return platformRepository.listAll();
+	}
+
+	public List<Platform> findAll(int page, int size) {
+		return platformRepository.findAll(page, size);
+	}
+
+	public long count() {
+		return platformRepository.count();
 	}
 
 	public Platform findById(Long id) {

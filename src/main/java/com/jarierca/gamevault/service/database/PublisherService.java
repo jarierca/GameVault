@@ -22,6 +22,14 @@ public class PublisherService {
 	public List<Publisher> listAll() {
 		return publisherRepository.listAll();
 	}
+	
+    public List<Publisher> findAll(int page, int size) {
+        return publisherRepository.findAll(page, size);
+    }
+
+    public long count() {
+        return publisherRepository.count();
+    }
 
 	public Publisher findById(Long id) {
 		return publisherRepository.findById(id);

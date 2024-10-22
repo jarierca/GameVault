@@ -3,6 +3,7 @@ package com.jarierca.gamevault.service.collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.jarierca.gamevault.dto.collection.VideogameCollectionDTO;
 import com.jarierca.gamevault.entity.collection.CollectionVideogame;
 import com.jarierca.gamevault.entity.collection.GameCollection;
 import com.jarierca.gamevault.entity.database.Videogame;
@@ -37,18 +38,17 @@ public class CollectionVideogameService {
 	public CollectionVideogame findById(Long id) {
 		return collectionVideogameRepository.findById(id);
 	}
-	
+
 	public CollectionVideogame findByIdAndPlayerId(Long collectionVideogameId) {
 		Long playerId = authService.getAuthenticatedUserId();
 
-		return collectionVideogameRepository
-				.findByPlayerIdAndCollectionVideogameId(playerId, collectionVideogameId);
+		return collectionVideogameRepository.findByPlayerIdAndCollectionVideogameId(playerId, collectionVideogameId);
 	}
 
-	public List<CollectionVideogame> getCollectionVideogameByCollectionId(Long gamecollectionId) {
+	public List<VideogameCollectionDTO> getCollectionVideogameByCollectionId(Long gamecollectionId) {
 		Long playerId = authService.getAuthenticatedUserId();
-		
-		List<CollectionVideogame> collectionVideogames = collectionVideogameRepository
+
+		List<VideogameCollectionDTO> collectionVideogames = collectionVideogameRepository
 				.findByPlayerIdAndGameCollectionId(playerId, gamecollectionId);
 
 		if (collectionVideogames != null) {

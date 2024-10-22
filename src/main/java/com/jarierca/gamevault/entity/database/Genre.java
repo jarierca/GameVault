@@ -1,8 +1,11 @@
 package com.jarierca.gamevault.entity.database;
 
 import java.util.List;
+import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.CascadeType;
@@ -10,6 +13,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -20,9 +24,11 @@ public class Genre extends PanacheEntityBase {
 	private Long id;
 
 	private String name;
+	@ManyToMany(mappedBy = "genres")
+	public Set<Videogame> videogames;
 	@OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
-	@JsonManagedReference
-    private List<Images> images;
+	@JsonBackReference
+	private List<Image> images;
 
 	public Genre() {
 	}
@@ -47,5 +53,21 @@ public class Genre extends PanacheEntityBase {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Set<Videogame> getVideogames() {
+		return videogames;
+	}
+
+	public void setVideogames(Set<Videogame> videogames) {
+		this.videogames = videogames;
+	}
+
+	public List<Image> getImages() {
+		return images;
+	}
+
+	public void setImages(List<Image> images) {
+		this.images = images;
 	}
 }

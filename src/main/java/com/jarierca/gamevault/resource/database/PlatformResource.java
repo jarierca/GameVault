@@ -2,7 +2,9 @@ package com.jarierca.gamevault.resource.database;
 
 import java.util.List;
 
+import com.jarierca.gamevault.dto.communication.PageResponse;
 import com.jarierca.gamevault.entity.database.Platform;
+import com.jarierca.gamevault.entity.database.Publisher;
 import com.jarierca.gamevault.service.database.PlatformService;
 
 import jakarta.inject.Inject;
@@ -14,6 +16,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -25,10 +28,14 @@ public class PlatformResource {
     @Inject
     PlatformService platformService;
 
-    @GET
-    public List<Platform> getAllPlatforms() {
-        return platformService.listAll();
-    }
+	@GET
+	public PageResponse<Platform> getAllPlatforms(@QueryParam("page") int page, @QueryParam("size") int size) {
+		List<Platform> platforms = platformService.findAll(page, size);
+		long totalElements = platformService.count();
+		int totalPages = (int) Math.ceil((double) totalElements / size);
+
+		return new PageResponse<>(platforms, totalPages, totalElements);
+	}
 
     @GET
     @Path("/{id}")

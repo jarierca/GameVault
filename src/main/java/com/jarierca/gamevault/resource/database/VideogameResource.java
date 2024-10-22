@@ -2,6 +2,11 @@ package com.jarierca.gamevault.resource.database;
 
 import java.util.List;
 
+import com.jarierca.gamevault.dto.communication.PageResponse;
+import com.jarierca.gamevault.dto.database.VideogameDTO;
+import com.jarierca.gamevault.entity.database.Developer;
+import com.jarierca.gamevault.entity.database.Platform;
+import com.jarierca.gamevault.entity.database.Publisher;
 import com.jarierca.gamevault.entity.database.Videogame;
 import com.jarierca.gamevault.service.database.VideogameService;
 
@@ -46,26 +51,53 @@ public class VideogameResource {
 
 	@GET
 	@Path("/platform/{platformId}")
-	public List<Videogame> getVideogamesByPlatform(@PathParam("platformId") Long platformId) {
-		return videogameService.findByPlatformId(platformId);
+	public PageResponse<VideogameDTO> getVideogamesByPlatform(@PathParam("platformId") Long platformId,
+			@QueryParam("page") int page, @QueryParam("size") int size) {
+
+		List<VideogameDTO> videogames = videogameService.findByField(Platform.class.getSimpleName().toLowerCase(),
+				platformId, page, size);
+		long totalElements = videogameService.countByField(Platform.class.getSimpleName().toLowerCase(), platformId);
+		int totalPages = (int) Math.ceil((double) totalElements / size);
+
+		return new PageResponse<>(videogames, totalPages, totalElements);
 	}
-	
+
 	@GET
 	@Path("/developer/{developerId}")
-	public List<Videogame> getVideogamesByDeveloper(@PathParam("developerId") Long developerId) {
-		return videogameService.findByDeveloperId(developerId);
+	public PageResponse<VideogameDTO> getVideogamesByDeveloper(@PathParam("developerId") Long developerId,
+			@QueryParam("page") int page, @QueryParam("size") int size) {
+
+		List<VideogameDTO> videogames = videogameService.findByField(Developer.class.getSimpleName().toLowerCase(),
+				developerId, page, size);
+		long totalElements = videogameService.countByField(Developer.class.getSimpleName().toLowerCase(), developerId);
+		int totalPages = (int) Math.ceil((double) totalElements / size);
+
+		return new PageResponse<>(videogames, totalPages, totalElements);
 	}
-	
+
 	@GET
 	@Path("/publisher/{publisherId}")
-	public List<Videogame> getVideogamesByPublisher(@PathParam("publisherId") Long publisherId) {
-		return videogameService.findByPublisherId(publisherId);
+	public PageResponse<VideogameDTO> getVideogamesByPublisher(@PathParam("publisherId") Long publisherId,
+			@QueryParam("page") int page, @QueryParam("size") int size) {
+
+		List<VideogameDTO> videogames = videogameService.findByField(Publisher.class.getSimpleName().toLowerCase(),
+				publisherId, page, size);
+		long totalElements = videogameService.countByField(Publisher.class.getSimpleName().toLowerCase(), publisherId);
+		int totalPages = (int) Math.ceil((double) totalElements / size);
+
+		return new PageResponse<>(videogames, totalPages, totalElements);
 	}
 
 	@GET
 	@Path("/genre/{genreId}")
-	public List<Videogame> getVideogamesByGenre(@PathParam("genreId") Long genreId) {
-		return videogameService.findByGenreId(genreId);
+	public PageResponse<VideogameDTO> getVideogamesByGenreId(@PathParam("genreId") Long genreId,
+			@QueryParam("page") int page, @QueryParam("size") int size) {
+
+		List<VideogameDTO> videogames = videogameService.findByGenreId(genreId, page, size);
+		long totalElements = videogameService.countByGenre(genreId);
+		int totalPages = (int) Math.ceil((double) totalElements / size);
+
+		return new PageResponse<>(videogames, totalPages, totalElements);
 	}
 
 	@GET
@@ -78,7 +110,7 @@ public class VideogameResource {
 	@GET
 	@Path("/search")
 	public Response searchVideogamesByTitle(@QueryParam("title") String title) {
-		List<Videogame> results = videogameService.searchByTitle(title);
+		List<VideogameDTO> results = videogameService.searchByTitle(title);
 		if (results.isEmpty()) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 //	        return Response.ok("No results found").build();

@@ -43,24 +43,62 @@ public class VideogameRepository implements PanacheRepository<Videogame> {
 		return randomGames.stream().limit(limit).map(this::toDTO).collect(Collectors.toList());
 	}
 
-	public List<Videogame> findByPlatformId(Long platformId) {
-		return list("platform.id", platformId);
+	public List<VideogameDTO> findByField(String field, Long id, int page, int size) {
+		String query = String
+				.format("SELECT new com.jarierca.gamevault.dto.database.VideogameDTO(v.id, v.title, v.releaseDate) "
+						+ " FROM Videogame v WHERE v.%s.id = :id", field);
+		return entityManager.createQuery(query, VideogameDTO.class).setParameter("id", id).setFirstResult(page * size)
+				.setMaxResults(size).getResultList();
 	}
 
-	public List<Videogame> findByPublisherId(Long publisherId) {
-		return list("publisher.id", publisherId);
-	}
-	
-	public List<Videogame> findByGenreId(Long genreId) {
-		return list("genre.id", genreId);
-	}
-	
-	public List<Videogame> findByDeveloperId(Long developerId) {
-		return list("developer.id", developerId);
+	public long countByField(String field, Long id) {
+		String query = String.format("SELECT COUNT(v) FROM Videogame v WHERE v.%s.id = :id", field);
+		return entityManager.createQuery(query, Long.class).setParameter("id", id).getSingleResult();
 	}
 
-	public List<Videogame> findByTitle(String title) {
-		return find("LOWER(title) LIKE LOWER(?1)", "%" + title + "%").list();
+	public List<VideogameDTO> findByPlatformId(Long platformId) {
+		String query = "SELECT new com.jarierca.gamevault.dto.database.VideogameDTO(v.id, v.title, v.releaseDate) "
+				+ "FROM Videogame v WHERE v.platform.id = :platformId";
+
+		return entityManager.createQuery(query, VideogameDTO.class).setParameter("platformId", platformId)
+				.getResultList();
+	}
+
+	public List<VideogameDTO> findByDeveloperId(Long developerId) {
+		String query = "SELECT new com.tu.paquete.VideogameDTO(v.id, v.title, v.releaseDate, v.images) "
+				+ "FROM Videogame v WHERE v.developer.id = :developerId";
+
+		return entityManager.createQuery(query, VideogameDTO.class).setParameter("developerId", developerId)
+				.getResultList();
+	}
+
+	public List<VideogameDTO> findByPublisherId(Long publisherId) {
+		String query = "SELECT new com.jarierca.gamevault.dto.database.VideogameDTO(v.id, v.title, v.releaseDate) "
+				+ "FROM Videogame v WHERE v.publisher.id = :publisherId";
+
+		return entityManager.createQuery(query, VideogameDTO.class).setParameter("publisherId", publisherId)
+				.getResultList();
+	}
+
+	public List<VideogameDTO> findByGenreId(Long id, int page, int size) {
+		String query = "SELECT new com.jarierca.gamevault.dto.database.VideogameDTO(v.id, v.title, v.releaseDate) "
+				+ "FROM Videogame v  JOIN v.genres vg  WHERE vg.id = :id";
+
+		return entityManager.createQuery(query, VideogameDTO.class).setParameter("id", id).setFirstResult(page * size)
+				.setMaxResults(size).getResultList();
+	}
+
+	public long countByGenre(Long id) {
+		String query = String.format("SELECT COUNT(v) FROM Videogame v  JOIN v.genres vg  WHERE vg.id = :id");
+		return entityManager.createQuery(query, Long.class).setParameter("id", id).getSingleResult();
+	}
+
+	public List<VideogameDTO> findByTitle(String title) {
+		String query = "SELECT new com.jarierca.gamevault.dto.database.VideogameDTO(v.id, v.title, v.releaseDate) "
+				+ "FROM Videogame v WHERE LOWER(v.title) LIKE LOWER(:title)";
+
+		return entityManager.createQuery(query, VideogameDTO.class).setParameter("title", "%" + title + "%")
+				.getResultList();
 	}
 
 	@Transactional

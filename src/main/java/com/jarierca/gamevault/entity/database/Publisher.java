@@ -25,7 +25,7 @@ public class Publisher extends PanacheEntityBase {
 	private Date date;
 	@OneToMany(mappedBy = "publisher", cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<Images> images;
+	private List<Image> images;
 
 	public Publisher() {
 	}

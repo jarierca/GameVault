@@ -3,7 +3,8 @@ package com.jarierca.gamevault.resource.collection;
 import java.util.List;
 import java.util.Map;
 
-import com.jarierca.gamevault.dto.collection.VideogameCollectionDTO;
+import com.jarierca.gamevault.dto.collection.VideogameCollectionDetailDTO;
+import com.jarierca.gamevault.dto.collection.VideogameCollectionViewDTO;
 import com.jarierca.gamevault.entity.collection.CollectionVideogame;
 import com.jarierca.gamevault.service.collection.CollectionVideogameService;
 
@@ -38,7 +39,7 @@ public class CollectionVideogameResource {
 	@GET
 	@Path("/{id}")
 	public Response getCollectionVideogame(@PathParam("id") Long collectionVideogameId) {
-		CollectionVideogame collectionVideogame = collectionVideogameService.findByIdAndPlayerId(collectionVideogameId);
+		VideogameCollectionDetailDTO collectionVideogame = collectionVideogameService.findByIdAndPlayerId(collectionVideogameId);
 
 		return collectionVideogame != null ? Response.ok(collectionVideogame).build()
 				: Response.status(Response.Status.NOT_FOUND).build();
@@ -49,7 +50,7 @@ public class CollectionVideogameResource {
 	public Response addGameToCollection(@PathParam("collectionId") Long collectionId, Map<String, Long> body) {
 		Long gameId = body.get("gameId");
 
-		CollectionVideogame addedGame = collectionVideogameService.addGameToCollection(collectionId, gameId);
+		VideogameCollectionViewDTO addedGame = collectionVideogameService.addGameToCollection(collectionId, gameId);
 
 		return addedGame != null ? Response.ok(addedGame).build()
 				: Response.status(Response.Status.BAD_REQUEST).build();
@@ -58,7 +59,7 @@ public class CollectionVideogameResource {
 	@GET
 	@Path("{collectionId}/videogames")
 	public Response getCollectionVideogameByCollectionId(@PathParam("collectionId") Long collectionId) {
-		List<VideogameCollectionDTO> games = collectionVideogameService
+		List<VideogameCollectionViewDTO> games = collectionVideogameService
 				.getCollectionVideogameByCollectionId(collectionId);
 
 		return Response.ok(games).build();
@@ -67,7 +68,7 @@ public class CollectionVideogameResource {
 	@PUT
 	@Path("/{id}")
 	public Response updateCollectionVideogame(@PathParam("id") Long collectionVideogameId,
-			CollectionVideogame collectionVideogame) {
+			VideogameCollectionDetailDTO collectionVideogame) {
 		if (collectionVideogame == null) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}

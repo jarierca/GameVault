@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.jarierca.gamevault.dto.communication.PageResponse;
 import com.jarierca.gamevault.entity.database.Platform;
-import com.jarierca.gamevault.entity.database.Publisher;
 import com.jarierca.gamevault.service.database.PlatformService;
 
 import jakarta.inject.Inject;

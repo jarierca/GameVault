@@ -2,6 +2,7 @@ package com.jarierca.gamevault.entity.collection;
 
 import java.util.Date;
 
+import com.jarierca.gamevault.dto.collection.VideogameCollectionDetailDTO;
 import com.jarierca.gamevault.entity.database.Videogame;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -83,17 +84,17 @@ public class CollectionVideogame extends PanacheEntityBase {
 	 * 
 	 * @param other The CollectionVideogame object to copy properties from.
 	 */
-	public void copyFrom(CollectionVideogame other) {
-	    this.setDigital(other.isDigital());
-	    this.setStatus(other.getStatus());
-	    this.setCompleted(other.isCompleted());
-	    this.setTimesCompleted(other.getTimesCompleted());
-	    this.setHoursPlayed(other.getHoursPlayed());
-	    this.setRating(other.getRating());
-	    this.setNotes(other.getNotes());
-	    this.setDateAdded(other.getDateAdded());
-	    this.setPhysicalStatus(other.getPhysicalStatus());
-	    this.setPurchaseDate(other.getPurchaseDate());
+	public void copyFrom(VideogameCollectionDetailDTO dto) {
+	    this.setDigital(dto.getDigital());
+	    this.setStatus(dto.getStatus());
+	    this.setCompleted(dto.getCompleted());
+	    this.setTimesCompleted(dto.getTimesCompleted());
+	    this.setHoursPlayed(dto.getHoursPlayed());
+	    this.setRating(dto.getRating());
+	    this.setNotes(dto.getNotes());
+	    this.setDateAdded(dto.getDateAdded());
+	    this.setPhysicalStatus(dto.getPhysicalStatus());
+	    this.setPurchaseDate(dto.getPurchaseDate());
 	}
 	
 	public Long getId() {

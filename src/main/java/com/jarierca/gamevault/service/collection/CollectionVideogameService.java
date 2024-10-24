@@ -3,7 +3,8 @@ package com.jarierca.gamevault.service.collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.jarierca.gamevault.dto.collection.VideogameCollectionDTO;
+import com.jarierca.gamevault.dto.collection.VideogameCollectionDetailDTO;
+import com.jarierca.gamevault.dto.collection.VideogameCollectionViewDTO;
 import com.jarierca.gamevault.entity.collection.CollectionVideogame;
 import com.jarierca.gamevault.entity.collection.GameCollection;
 import com.jarierca.gamevault.entity.database.Videogame;
@@ -39,16 +40,16 @@ public class CollectionVideogameService {
 		return collectionVideogameRepository.findById(id);
 	}
 
-	public CollectionVideogame findByIdAndPlayerId(Long collectionVideogameId) {
+	public VideogameCollectionDetailDTO findByIdAndPlayerId(Long collectionVideogameId) {
 		Long playerId = authService.getAuthenticatedUserId();
 
 		return collectionVideogameRepository.findByPlayerIdAndCollectionVideogameId(playerId, collectionVideogameId);
 	}
 
-	public List<VideogameCollectionDTO> getCollectionVideogameByCollectionId(Long gamecollectionId) {
+	public List<VideogameCollectionViewDTO> getCollectionVideogameByCollectionId(Long gamecollectionId) {
 		Long playerId = authService.getAuthenticatedUserId();
 
-		List<VideogameCollectionDTO> collectionVideogames = collectionVideogameRepository
+		List<VideogameCollectionViewDTO> collectionVideogames = collectionVideogameRepository
 				.findByPlayerIdAndGameCollectionId(playerId, gamecollectionId);
 
 		if (collectionVideogames != null) {
@@ -61,7 +62,7 @@ public class CollectionVideogameService {
 	public void validatePlayerCollectionVideogames(Long collectionVideogameId) {
 		Long playerId = authService.getAuthenticatedUserId();
 
-		CollectionVideogame existingCollection = collectionVideogameRepository
+		VideogameCollectionDetailDTO existingCollection = collectionVideogameRepository
 				.findByPlayerIdAndCollectionVideogameId(playerId, collectionVideogameId);
 
 		if (existingCollection == null) {
@@ -75,7 +76,7 @@ public class CollectionVideogameService {
 		return collectionVideogame;
 	}
 
-	public CollectionVideogame addGameToCollection(Long collectionId, Long gameId) {
+	public VideogameCollectionViewDTO addGameToCollection(Long collectionId, Long gameId) {
 		if (collectionId == null) {
 			throw new IllegalArgumentException("Collection ID cannot be null.");
 		}
@@ -94,7 +95,7 @@ public class CollectionVideogameService {
 			throw new IllegalArgumentException("No Videogame found with ID: " + gameId);
 		}
 
-		return create(new CollectionVideogame(gameCollection, game));
+		return new VideogameCollectionViewDTO(create(new CollectionVideogame(gameCollection, game)));
 	}
 
 	@Transactional
@@ -106,12 +107,12 @@ public class CollectionVideogameService {
 	}
 
 	@Transactional
-	public CollectionVideogame update(Long id, CollectionVideogame updatedCollectionVideogame) {
+	public CollectionVideogame update(Long id, VideogameCollectionDetailDTO updatedCollectionVideogameDto) {
 		CollectionVideogame existingCollectionVideogame = collectionVideogameRepository.findById(id);
 
 		if (existingCollectionVideogame != null) {
 
-			existingCollectionVideogame.copyFrom(updatedCollectionVideogame);
+			existingCollectionVideogame.copyFrom(updatedCollectionVideogameDto);
 
 			return existingCollectionVideogame;
 		}

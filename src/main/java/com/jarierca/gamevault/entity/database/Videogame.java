@@ -155,7 +155,7 @@ public class Videogame extends PanacheEntityBase {
 		return genres;
 	}
 
-	public void setGenre(Set<Genre> genres) {
+	public void setGenres(Set<Genre> genres) {
 		this.genres = genres;
 	}
 
@@ -174,4 +174,13 @@ public class Videogame extends PanacheEntityBase {
 	public void setPublisher(Publisher publisher) {
 		this.publisher = publisher;
 	}
+
+	public List<Image> getImages() {
+		return images;
+	}
+
+	public void setImages(List<Image> images) {
+		this.images = images;
+	}
+
 }

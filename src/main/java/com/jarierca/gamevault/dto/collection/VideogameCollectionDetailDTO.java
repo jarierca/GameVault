@@ -1,6 +1,5 @@
 package com.jarierca.gamevault.dto.collection;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 //@SqlResultSetMapping(name = "VideogameCollectionDetailMapping", classes = @ConstructorResult(targetClass = VideogameCollectionDetailDTO.class, columns = {

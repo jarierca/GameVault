@@ -3,6 +3,7 @@ package com.jarierca.gamevault.service.database;
 import java.util.List;
 
 import com.jarierca.gamevault.dto.database.VideogameDTO;
+import com.jarierca.gamevault.dto.database.VideogameDetailDTO;
 import com.jarierca.gamevault.entity.database.Videogame;
 import com.jarierca.gamevault.repository.database.StatsRepository;
 import com.jarierca.gamevault.repository.database.VideogameRepository;
@@ -24,8 +25,8 @@ public class VideogameService {
 		return videogameRepository.listAll();
 	}
 
-	public Videogame findById(Long id) {
-		return videogameRepository.findById(id);
+	public VideogameDetailDTO findById(Long id) {
+		return videogameRepository.findVideogameDTOById(id);
 	}
 
 	public long countVideogames() {

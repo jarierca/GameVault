@@ -1,9 +1,14 @@
 package com.jarierca.gamevault.repository.database;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.jarierca.gamevault.dto.database.ImageDTO;
 import com.jarierca.gamevault.dto.database.VideogameDTO;
+import com.jarierca.gamevault.dto.database.VideogameDetailDTO;
+import com.jarierca.gamevault.entity.database.Image;
 import com.jarierca.gamevault.entity.database.Videogame;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
@@ -37,6 +42,13 @@ public class VideogameRepository implements PanacheRepository<Videogame> {
 		return entityManager.find(Videogame.class, id);
 	}
 
+	public VideogameDetailDTO findVideogameDTOById(Long id) {
+
+		Videogame videogame = entityManager.find(Videogame.class, id);
+
+		return new VideogameDetailDTO(videogame);
+	}
+
 	public List<VideogameDTO> findRandomGames(int limit) {
 		List<Videogame> randomGames = find("ORDER BY RANDOM()").list();
 
@@ -44,11 +56,28 @@ public class VideogameRepository implements PanacheRepository<Videogame> {
 	}
 
 	public List<VideogameDTO> findByField(String field, Long id, int page, int size) {
-		String query = String
-				.format("SELECT new com.jarierca.gamevault.dto.database.VideogameDTO(v.id, v.title, v.releaseDate) "
-						+ " FROM Videogame v WHERE v.%s.id = :id", field);
-		return entityManager.createQuery(query, VideogameDTO.class).setParameter("id", id).setFirstResult(page * size)
-				.setMaxResults(size).getResultList();
+		String query = String.format("SELECT v FROM Videogame v " + "LEFT JOIN FETCH v.images i "
+				+ "WHERE v.%s.id = :id AND (i.imageType IN :imageTypes OR i.id IS NULL)", field);
+
+		List<Image.ImageType> imageTypes = Arrays.asList(Image.ImageType.COVER, Image.ImageType.BANNER);
+
+		List<Videogame> videogames = entityManager.createQuery(query, Videogame.class).setParameter("id", id)
+				.setParameter("imageTypes", imageTypes).setFirstResult(page * size).setMaxResults(size).getResultList();
+
+		List<VideogameDTO> result = new ArrayList<>();
+		for (Videogame videogame : videogames) {
+			List<ImageDTO> imageDTOs = videogame.getImages().stream()
+					.filter(image -> image.getImageType() == Image.ImageType.COVER
+							|| image.getImageType() == Image.ImageType.BANNER)
+					.map(image -> new ImageDTO(image.getId(), image.getName(), image.getAltName(), image.getUrl(),
+							image.getImageType()))
+					.collect(Collectors.toList());
+
+			result.add(
+					new VideogameDTO(videogame.getId(), videogame.getTitle(), videogame.getReleaseDate(), imageDTOs));
+		}
+
+		return result;
 	}
 
 	public long countByField(String field, Long id) {

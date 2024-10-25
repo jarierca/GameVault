@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.jarierca.gamevault.dto.communication.PageResponse;
 import com.jarierca.gamevault.dto.database.VideogameDTO;
+import com.jarierca.gamevault.dto.database.VideogameDetailDTO;
 import com.jarierca.gamevault.entity.database.Developer;
 import com.jarierca.gamevault.entity.database.Platform;
 import com.jarierca.gamevault.entity.database.Publisher;
@@ -41,7 +42,7 @@ public class VideogameResource {
 	@GET
 	@Path("/{id}")
 	public Response getVideogameById(@PathParam("id") Long id) {
-		Videogame videogame = videogameService.findById(id);
+		VideogameDetailDTO videogame = videogameService.findById(id);
 		if (videogame != null) {
 			return Response.ok(videogame).build();
 		} else {

@@ -47,3 +47,5 @@ nb-configuration.xml
 *.key
 *.pem
 
+# Ignore images
+images/

@@ -9,7 +9,7 @@ public class VideogameDTO {
 	public Long id;
 	public String title;
 	public Date releaseDate;
-	public List<Image> images;
+	public List<ImageDTO> images;
 
 	public VideogameDTO(Long id, String title, Date releaseDate) {
 		this.id = id;
@@ -17,7 +17,7 @@ public class VideogameDTO {
 		this.releaseDate = releaseDate;
 	}
 
-	public VideogameDTO(Long id, String title, Date releaseDate, List<Image> images) {
+	public VideogameDTO(Long id, String title, Date releaseDate, List<ImageDTO> images) {
 		this.id = id;
 		this.title = title;
 		this.releaseDate = releaseDate;

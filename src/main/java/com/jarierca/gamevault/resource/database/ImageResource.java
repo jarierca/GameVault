@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.List;
 
 import com.jarierca.gamevault.config.UploadConfig;
@@ -39,10 +40,32 @@ public class ImageResource {
 	UploadConfig uploadConfig;
 
 	@GET
-	@Path("/p/{path}")
-	@Produces("image/png")
-	public Response getImage(@PathParam("path") String imageName) {
-		return Response.ok(new File("images/videogames/" + imageName)).build();
+	@Path("/p/{path:.+}")
+	public Response getImage(@PathParam("path") String path) {
+		File baseDir = new File(System.getProperty("user.dir"), "images");
+
+		try {
+			File requestedFile = new File(baseDir, path).getCanonicalFile();
+
+			if (!requestedFile.getPath().startsWith(baseDir.getCanonicalPath())) {
+				return Response.status(Response.Status.FORBIDDEN)
+						.entity("Access to the requested resource is forbidden.").build();
+			}
+
+			if (!requestedFile.exists() || !requestedFile.isFile()) {
+				return Response.status(Response.Status.NOT_FOUND).build();
+			}
+
+			String mimeType = Files.probeContentType(requestedFile.toPath());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+
+			return Response.ok(requestedFile, mimeType).build();
+		} catch (IOException e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity("An error occurred while processing the file.").build();
+		}
 	}
 
 	@GET

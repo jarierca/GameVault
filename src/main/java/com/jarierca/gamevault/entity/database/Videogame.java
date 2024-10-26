@@ -32,7 +32,7 @@ public class Videogame extends PanacheEntityBase {
 	private Date releaseDate;
 	private String gameType;
 	private Integer maxPlayers;
-	@Column(length = 5000)
+	@Column(length = 15000)
 	private String overview;
 	private String alternativeNames;
 	private String urlAlt;

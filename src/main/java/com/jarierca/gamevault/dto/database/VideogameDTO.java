@@ -3,8 +3,6 @@ package com.jarierca.gamevault.dto.database;
 import java.util.Date;
 import java.util.List;
 
-import com.jarierca.gamevault.entity.database.Image;
-
 public class VideogameDTO {
 	public Long id;
 	public String title;

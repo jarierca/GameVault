@@ -3,6 +3,7 @@ package com.jarierca.gamevault.entity.database;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -22,6 +23,7 @@ public class Image extends PanacheEntityBase {
 
 	private String name;
 	private String altName;
+	@Column(length = 500)
 	private String url;
 	private Double size;
 	@Enumerated(EnumType.STRING)

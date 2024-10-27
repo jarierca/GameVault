@@ -116,6 +116,12 @@ public class ImageResource {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response uploadImage(@Context HttpHeaders headers, @PathParam("file") InputStream fileInputStream,
 			@PathParam("name") String fileName) {
+
+		if (fileName.contains("..") || fileName.contains("/") || fileName.contains("\\")) {
+			return Response.status(Response.Status.BAD_REQUEST).entity("Nombre de archivo inválido: " + fileName)
+					.build();
+		}
+
 		try {
 			File uploadDir = new File("/path/to/your/project/images/videogames/");
 			if (!uploadDir.exists()) {
@@ -123,6 +129,12 @@ public class ImageResource {
 			}
 
 			File file = new File(uploadDir, fileName);
+
+			if (!file.getCanonicalPath().startsWith(uploadDir.getCanonicalPath())) {
+				return Response.status(Response.Status.FORBIDDEN)
+						.entity("Acceso prohibido a la ruta del archivo: " + file.getAbsolutePath()).build();
+			}
+
 			try (FileOutputStream out = new FileOutputStream(file)) {
 				byte[] buffer = new byte[1024];
 				int bytesRead;
@@ -131,10 +143,10 @@ public class ImageResource {
 				}
 			}
 
-			return Response.ok("Imagen subida correctamente").build();
+			return Response.ok("Image successful uploaded").build();
 		} catch (IOException e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-					.entity("Error al subir la imagen: " + e.getMessage()).build();
+					.entity("Error, uploading an image: " + e.getMessage()).build();
 		}
 	}
 

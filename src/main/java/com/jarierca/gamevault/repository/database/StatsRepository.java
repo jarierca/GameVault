@@ -2,12 +2,14 @@ package com.jarierca.gamevault.repository.database;
 
 import java.util.List;
 
+import groovyjarjarantlr4.runtime.misc.Stats;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
 @ApplicationScoped
-public class StatsRepository {
+public class StatsRepository implements PanacheRepository<Stats> {
 
 	@Inject
 	EntityManager em;
